@@ -652,37 +652,37 @@ body{background:linear-gradient(180deg,#3A3F46 0%,#2E3238 40%,#272A30 100%) !imp
 .kk-card__media{position:relative;overflow:hidden}
 </style>
 <style>
-.tk{position:relative;z-index:41;background:linear-gradient(90deg,#14308A,#2348B8 50%,#14308A);color:#DCE5FF;overflow:hidden;white-space:nowrap;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.12)}
+.tk{position:relative;z-index:41;background:linear-gradient(180deg,#45494F,#2F3237);box-shadow:inset 0 1px 0 rgba(255,255,255,.12);color:#AEB5C0;overflow:hidden;white-space:nowrap;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.12)}
 .tk-in{display:inline-flex;gap:38px;padding:11px 0;animation:tkm 60s linear infinite}
 .tk:hover .tk-in{animation-play-state:paused}
-.tk span::before{content:"✦";margin-right:12px;color:#A9BDEF}
-.tk b{color:#fff;font-weight:800;margin-left:6px}
-.tk .tk-hi b{color:#FFFFFF;background:rgba(255,255,255,.14);padding:3px 8px;border-radius:999px}
+.tk span::before{content:"✦";margin-right:12px;color:#8A9099}
+.tk b{font-weight:800;margin-left:6px;background:linear-gradient(180deg,#FFFFFF,#C9CED6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tk .tk-hi b{color:#ECEEF1;-webkit-text-fill-color:#ECEEF1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:999px}
 @keyframes tkm{to{transform:translateX(-50%)}}
-.sprog{position:fixed;left:0;top:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(var(--p,0));background:linear-gradient(90deg,#2C5BD6,#A9BDEF);z-index:60;pointer-events:none}
+.sprog{position:fixed;left:0;top:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(var(--p,0));background:linear-gradient(90deg,#8F969F,#F4F6F8);z-index:60;pointer-events:none}
 .band2{overflow:hidden;white-space:nowrap;border-block:1px solid rgba(255,255,255,.10);background:linear-gradient(180deg,#30343B,#2B2F35);padding:18px 0}
 .band2 div{display:inline-flex;gap:46px;font:800 clamp(28px,4.4vw,64px)/1 'Manrope',sans-serif;letter-spacing:-.03em;text-transform:uppercase;animation:tkm 45s linear infinite}
 .band2.rev div{animation-direction:reverse;animation-duration:55s}
-.band2 span{color:#EEF2FA}
-.band2 span.o{color:transparent;-webkit-text-stroke:1.2px rgba(169,189,239,.85)}
-.band2 span::after{content:"✦";margin-left:46px;color:#2C5BD6;-webkit-text-stroke:0}
-.stats{padding:clamp(34px,5vw,64px) 0;background:radial-gradient(60% 120% at 50% 0%,rgba(44,91,214,.16),transparent 70%)}
+.band2 span{background:linear-gradient(180deg,#FFFFFF 0%,#D7DCE2 50%,#9AA1AA 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.band2 span.o{background:none;color:transparent;-webkit-text-stroke:1.2px rgba(215,220,226,.55)}
+.band2 span::after{content:"✦";margin-left:46px;color:#7D838C;-webkit-text-fill-color:#7D838C;-webkit-text-stroke:0;font-size:.6em;vertical-align:middle}
+.stats{padding:clamp(34px,5vw,64px) 0;background:radial-gradient(60% 120% at 50% 0%,rgba(255,255,255,.06),transparent 70%)}
 .st-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .st-g div{padding:22px;border-radius:18px;background:linear-gradient(165deg,#3B4048,#30343B);border:1px solid rgba(255,255,255,.10);position:relative;overflow:hidden}
-.st-g b{display:block;font:200 clamp(40px,5vw,72px)/1 'Manrope',sans-serif;letter-spacing:-.04em;background:linear-gradient(180deg,#fff,#A9BDEF);-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
+.st-g b{display:block;font:200 clamp(40px,5vw,72px)/1 'Manrope',sans-serif;letter-spacing:-.04em;background:linear-gradient(180deg,#fff,#AEB5C0);-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
 .st-g span{display:block;margin-top:10px;color:#AEB5C0;font-size:14px}
 @media (max-width:760px){.st-g{grid-template-columns:1fr 1fr}}
 .calc2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:28px;align-items:center;border-radius:28px;padding:clamp(22px,4vw,52px);overflow:hidden;
- background:radial-gradient(70% 90% at 100% 0%,rgba(44,91,214,.35),transparent 60%),linear-gradient(165deg,#3B4048,#2C3036);border:1px solid rgba(169,189,239,.25)}
+ background:radial-gradient(70% 90% at 100% 0%,rgba(255,255,255,.08),transparent 60%),linear-gradient(165deg,#3B4048,#2C3036);border:1px solid rgba(255,255,255,.14)}
 .calc2 h2{margin:6px 0 10px;font:300 clamp(28px,3.4vw,48px)/1.05 'Manrope',sans-serif;letter-spacing:-.03em;color:#fff}
 .calc2 .mut{margin:0;color:#B8C0CF}
 .calc2 label{display:flex;justify-content:space-between;font-weight:600;margin-top:18px;color:#E8ECF3}
-.calc2 input[type=range]{width:100%;accent-color:#2C5BD6;margin-top:14px}
+.calc2 input[type=range]{width:100%;accent-color:#C9CED6;margin-top:14px}
 .calc2 .out{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}
 .calc2 .out div{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px}
 .calc2 .out small{display:block;color:#AEB5C0;font-size:12px}
 .calc2 .out b{font:700 clamp(20px,2.4vw,30px)/1.1 'Manrope',sans-serif;color:#fff}
-.calc2 .out .hi b{color:#A9BDEF}
+.calc2 .out .hi b{color:#fff}
 .calc2 .can{border-radius:20px;overflow:hidden;aspect-ratio:4/5;max-height:440px;justify-self:center;box-shadow:0 40px 70px -40px #000}
 .calc2 .can img{width:100%;height:100%;object-fit:cover;display:block}
 @media (max-width:860px){.calc2{grid-template-columns:1fr}.calc2 .can{order:-1;max-height:300px}.calc2 .out{grid-template-columns:1fr 1fr}}
@@ -690,7 +690,7 @@ body{background:linear-gradient(180deg,#3A3F46 0%,#2E3238 40%,#272A30 100%) !imp
 .rv.in{opacity:1;transform:none}
 .kk-card,.bento figure,.st-g div{transform-style:preserve-3d;will-change:transform}
 .spot::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3;opacity:0;transition:opacity .3s;
- background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),rgba(169,189,239,.20),transparent 45%)}
+ background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.12),transparent 45%)}
 .spot:hover::before{opacity:1}
 .kk-card{position:relative}
 .vt{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
