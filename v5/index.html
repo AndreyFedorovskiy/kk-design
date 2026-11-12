@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KK · Підбір за задачею</title>
+<meta name="description" content="KK — професійна хімія для прибирання оптом від виробника">
+<style>/* Shared component skin. Each variant sets the tokens on :root. */
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+h1,h2,h3{text-wrap:balance}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus,#F59E0B);outline-offset:2px}
+.kk-lock{overflow:hidden}
+.wrap{max-width:var(--max,1320px);margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:900px){.wrap{padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}}
+.kk-muted{color:var(--muted)}
+.kk-eyebrow{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.kk-variants{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;padding:7px 12px;background:#0B0F1A;color:#fff;font:600 12px/1.2 system-ui,sans-serif}
+.kk-variants a{color:#fff;text-decoration:none;padding:6px 11px;border-radius:999px;border:1px solid #2B3245}
+.kk-variants a[aria-current]{background:#fff;color:#0B0F1A}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:41;background:#0B0F1A}
+
+/* buttons */
+.kk-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border:0;border-radius:var(--radius-sm);background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:16px;text-decoration:none;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease,filter .15s}
+.kk-btn:hover{transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 10px 24px -12px var(--accent)}
+.kk-btn--ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line-strong,var(--line))}
+.kk-btn--wide{width:100%}
+.kk-link,.kk-linkbtn{color:var(--brand);font-weight:700;background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.kk-cartbtn{position:relative}
+.kk-badge{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:800}
+.kk-bump{animation:kkbump .45s ease}
+@keyframes kkbump{30%{transform:scale(1.12)}}
+
+/* filter */
+.kk-filter{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 14px;scrollbar-width:thin}
+.kk-pill{flex:0 0 auto;min-height:42px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;transition:background .15s,border-color .15s}
+.kk-pill:hover{border-color:var(--brand)}
+.kk-pill.is-on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.kk-nores{color:var(--muted)}
+
+/* product grid + card */
+.kk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--gap,18px)}
+.kk-card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:transform .2s ease,box-shadow .2s ease}
+.kk-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.kk-card__media{position:relative;display:grid;place-items:center;height:260px;padding:22px;border:0;background:var(--media,var(--surface-2));cursor:pointer;overflow:hidden}
+.kk-card__media img{height:100%;width:auto;object-fit:contain;filter:drop-shadow(0 18px 18px rgba(10,30,80,.18));transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.kk-card:hover .kk-card__media img{transform:translateY(-6px) rotate(-2deg) scale(1.03)}
+.kk-card__media--set{cursor:default}
+.kk-card__media--set img{width:100%;height:auto}
+.kk-card__peek{position:absolute;left:12px;bottom:12px;padding:6px 10px;border-radius:999px;background:var(--surface);color:var(--ink);font-size:12px;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.kk-card__body{display:flex;flex-direction:column;gap:8px;padding:16px 16px 18px;flex:1}
+.kk-card__title{margin:0;font-family:var(--font-display);font-size:18px;line-height:1.2;font-weight:var(--display-weight,700)}
+.kk-card__claim{margin:0;color:var(--muted);font-size:14px;line-height:1.45;flex:1}
+.kk-card__chips{display:flex;flex-wrap:wrap;gap:6px}
+.kk-chip{display:inline-flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:48px;padding:6px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;text-decoration:none;line-height:1.15;transition:border-color .15s,background .15s,transform .1s}
+.kk-chip span{font-size:12px;color:var(--muted)}
+.kk-chip b{font-size:15px;font-variant-numeric:tabular-nums}
+.kk-chip:hover{border-color:var(--brand)}
+.kk-chip:active{transform:scale(.97)}
+.kk-chip--bulk{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.kk-chip--bulk span{color:inherit;opacity:.8}
+.kk-card__chips--big .kk-chip{min-height:58px;padding:8px 16px}
+.kk-card__chips--big .kk-chip b{font-size:18px}
+
+/* before / after */
+.kk-ba{position:relative;aspect-ratio:476/214;max-width:100%;border-radius:var(--radius-sm);overflow:hidden;background:var(--surface-2);user-select:none;touch-action:pan-y}
+.kk-ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.kk-ba__before{clip-path:inset(0 calc(100% - var(--pos)) 0 0)}
+.kk-ba__line{position:absolute;top:0;bottom:0;left:var(--pos);width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.08);pointer-events:none}
+.kk-ba__knob{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#fff;color:#0B1B3F;font-weight:800;font-size:13px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.kk-ba__tag{position:absolute;top:10px;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;pointer-events:none}
+.kk-ba__tag--b{left:10px;background:rgba(10,20,40,.72);color:#fff}
+.kk-ba__tag--a{right:10px;background:#fff;color:#0B1B3F}
+.kk-ba__range{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize}
+.kk-ba__range:focus-visible + *{outline:none}
+.kk-ba:focus-within{outline:3px solid var(--focus,#F59E0B);outline-offset:2px}
+
+/* 5 l table */
+.kk-table{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.kk-tr{display:grid;grid-template-columns:minmax(0,1fr) 110px 100px 140px;gap:12px;align-items:center;padding:10px 16px;border-top:1px solid var(--line)}
+.kk-tr--head{border-top:0;background:var(--surface-2);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;padding-block:12px}
+.kk-td-name{display:flex;align-items:center;gap:12px;min-width:0}
+.kk-td-name small{display:block;color:var(--muted);font-size:13px}
+.kk-td-name b{font-size:15px}
+.kk-td-price{font-weight:800;font-variant-numeric:tabular-nums}
+.kk-td-l{color:var(--muted);font-variant-numeric:tabular-nums}
+.kk-can{width:38px;height:48px;flex:0 0 auto}
+@media (max-width:640px){.kk-tr{grid-template-columns:minmax(0,1fr) auto;row-gap:6px}.kk-tr--head{display:none}.kk-td-l{display:none}.kk-tr>span:last-child{grid-column:1/-1;justify-self:end}}
+.kk-qty{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:calc(var(--radius-sm) + 2px);background:var(--surface-2)}
+.kk-qty button{width:38px;height:38px;border:0;border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);font-size:18px;font-weight:800;cursor:pointer}
+.kk-qty button:last-child{background:var(--brand);color:var(--brand-ink)}
+.kk-qty>span{min-width:30px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* tier */
+.kk-tier{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:var(--radius-sm);background:var(--tier-bg,var(--surface-2))}
+.kk-tier__msg{margin:0;font-size:15px}
+.kk-tier__bar{position:relative;height:10px;border-radius:99px;background:var(--line)}
+.kk-tier__bar>span{position:absolute;inset:0 auto 0 0;border-radius:99px;background:var(--success,#12B76A);transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.kk-tier__bar i{position:absolute;top:-3px;width:4px;height:16px;margin-left:-2px;border-radius:2px;background:var(--muted);opacity:.5}
+.kk-tier__bar i.on{background:var(--success,#12B76A);opacity:1}
+.kk-tier__steps{display:flex;justify-content:space-between;gap:4px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.kk-tier__steps .on{color:var(--ink)}
+
+/* drawer + modal */
+.kk-scrim{position:fixed;inset:0;z-index:70;background:rgba(5,10,25,.5);backdrop-filter:blur(3px)}
+.kk-drawer{position:fixed;top:0;right:0;bottom:0;z-index:80;width:min(440px,100vw);display:flex;flex-direction:column;background:var(--surface);color:var(--ink);box-shadow:-20px 0 60px rgba(0,0,0,.25);transform:translateX(105%);visibility:hidden;transition:transform .35s cubic-bezier(.2,.7,.2,1),visibility 0s .35s;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.kk-drawer.is-open{transform:none;visibility:visible;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.kk-drawer__head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line);font-size:20px}
+.kk-drawer__body{flex:1;overflow:auto;padding:16px 20px 24px;display:flex;flex-direction:column;gap:14px}
+.kk-x{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font-size:24px;line-height:1;cursor:pointer}
+.kk-lines{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.kk-line{display:grid;grid-template-columns:52px minmax(0,1fr) auto;grid-template-areas:"img info info" "img qty sum";gap:6px 12px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:var(--radius-sm)}
+.kk-line__img{grid-area:img;display:grid;place-items:center;height:64px;background:var(--surface-2);border-radius:8px}
+.kk-line__img img{height:56px;width:auto}
+.kk-line__info{grid-area:info;display:flex;flex-direction:column;font-size:14px;min-width:0}
+.kk-line .kk-qty{grid-area:qty;justify-self:start}
+.kk-line__sum{grid-area:sum;font-variant-numeric:tabular-nums}
+.kk-sum{display:flex;flex-direction:column;gap:6px;padding-top:8px;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+.kk-sum>div{display:flex;justify-content:space-between}
+.kk-sum__save{color:var(--success-ink,#027A48);font-weight:700}
+.kk-sum__total{align-items:baseline}
+.kk-sum__total b{font-size:28px;letter-spacing:-.02em}
+.kk-back{align-self:flex-start;border:0;background:none;color:var(--brand);font-weight:700;cursor:pointer;padding:6px 0}
+.kk-form{display:flex;flex-direction:column;gap:8px}
+.kk-form h3{margin:0 0 4px;font-family:var(--font-display)}
+.kk-form label{font-size:14px;font-weight:600}
+.kk-form input:not([type=radio]){min-height:48px;padding:0 14px;border-radius:var(--radius-sm);border:1.5px solid var(--line-strong,var(--line));background:var(--bg);color:var(--ink);font:inherit}
+.kk-form fieldset{border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px 14px;display:flex;flex-direction:column;gap:6px;margin:6px 0}
+.kk-radio{display:flex;align-items:center;gap:10px;font-weight:500!important;min-height:36px}
+.kk-done,.kk-empty{display:flex;flex-direction:column;gap:10px;align-items:flex-start;padding:12px 0}
+.kk-done h3{margin:0;font-family:var(--font-display);font-size:24px}
+.kk-done p{margin:0}
+.kk-done__mark{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:var(--success,#12B76A);color:#fff;font-size:28px;font-weight:800}
+.kk-modal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:16px;visibility:hidden;opacity:0;transition:opacity .25s,visibility .25s}
+.kk-modal.is-open{visibility:visible;opacity:1}
+.kk-modal__card{position:relative;width:min(1040px,100%);max-height:calc(100dvh - 32px);overflow:auto;background:var(--surface);color:var(--ink);border-radius:var(--radius);box-shadow:0 40px 100px rgba(0,0,0,.35);transform:translateY(16px) scale(.98);transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.kk-modal.is-open .kk-modal__card{transform:none}
+.kk-modal__card>.kk-x{position:absolute;top:12px;right:12px;z-index:2}
+.kk-modal__inner{display:flex;flex-wrap:wrap}
+.kk-modal__media{flex:1 1 300px;display:grid;place-items:center;padding:32px;background:var(--media,var(--surface-2));min-height:320px}
+.kk-modal__media img{max-height:420px;width:auto;filter:drop-shadow(0 24px 24px rgba(10,30,80,.2))}
+.kk-modal__info{flex:1.4 1 360px;min-width:0;padding:28px;display:flex;flex-direction:column;gap:12px}
+.kk-modal__info h2{margin:0;font-family:var(--font-display);font-size:32px;line-height:1.1;font-weight:var(--display-weight,800)}
+.kk-modal__info>p{margin:0}
+.kk-modal__ba{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.kk-modal__ba>p{grid-column:1/-1;margin:0;font-size:13px}
+@media (max-width:560px){.kk-modal__ba{grid-template-columns:1fr}.kk-modal__media{min-height:220px;padding:20px}.kk-modal__media img{max-height:220px}}
+.kk-econ{display:flex;flex-direction:column;padding:14px 16px;border-radius:var(--radius-sm);background:var(--econ-bg,var(--surface-2))}
+.kk-econ span{font-size:13px;color:var(--muted)}
+.kk-econ b{font-size:24px;letter-spacing:-.02em;color:var(--brand)}
+.kk-econ small{color:var(--muted)}
+.kk-docs{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px;font-size:13px;color:var(--muted)}
+.kk-docs li{padding:6px 10px;border:1px dashed var(--line);border-radius:8px}
+.kk-toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:90;max-width:min(440px,calc(100vw - 32px));transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:12px 16px;border-radius:14px;background:#0B0F1A;color:#fff;font-size:14px;box-shadow:0 16px 40px rgba(0,0,0,.3);transition:opacity .25s,transform .25s}
+.kk-toast.is-on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.kk-toast .kk-linkbtn{color:#9EC1FF}
+@media (min-width:900px){.kk-toast{left:auto;right:24px;bottom:24px;transform:translateY(20px)}.kk-toast.is-on{transform:none}}
+.kk-mbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;grid-template-columns:repeat(4,1fr);background:var(--surface);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.kk-mbar a,.kk-mbar button{display:flex;align-items:center;justify-content:center;gap:6px;min-height:48px;border:0;background:none;color:var(--ink);font-size:13px;font-weight:700;text-decoration:none}
+@media (max-width:760px){.kk-mbar{display:grid}body{padding-bottom:72px}}
+
+/* lead form (page) */
+.kk-lead{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;align-items:end}
+.kk-lead label{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600}
+.kk-lead input,.kk-lead select{min-height:50px;padding:0 14px;border-radius:var(--radius-sm);border:1.5px solid var(--line-strong,var(--line));background:var(--bg);color:var(--ink);font:inherit}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap">
+<style>
+/* Layout: problem-first selector. The visitor picks the dirt, the page answers with product, proof and price. */
+:root{--bg:#FAFAF7;--surface:#FFFFFF;--surface-2:#F1F2EE;--media:linear-gradient(180deg,#F4F6FA,#E6EBF3);--ink:#111827;--muted:#5B6474;--line:#E4E5E0;--line-strong:#CDD0C8;--brand:#1D4ED8;--brand-ink:#FFFFFF;--accent:#FF5A36;--accent-ink:#FFFFFF;--success:#0E7A4E;--success-ink:#0E7A4E;--tier-bg:#F1F2EE;--econ-bg:#FFF1EC;--radius:20px;--radius-sm:12px;--font:'Inter',system-ui,sans-serif;--font-display:'Inter Tight','Inter',sans-serif;--display-weight:800;--shadow:0 24px 48px -28px rgba(17,24,39,.35);--focus:#FF5A36;--max:1360px}
+.D{font-family:'Inter Tight',sans-serif}
+.hdr{position:sticky;top:calc(env(safe-area-inset-top,0px) + 34px);z-index:30;background:rgba(250,250,247,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hdr .wrap{display:flex;align-items:center;gap:18px;min-height:68px}
+.hdr nav{display:flex;gap:4px;margin-left:auto;font-weight:600;font-size:15px}
+.hdr nav a{padding:9px 14px;border-radius:999px;text-decoration:none;color:var(--ink)}
+.hdr nav a:hover{background:var(--surface-2)}
+@media (max-width:980px){.hdr nav{display:none}.hdr .kk-btn{margin-left:auto}}
+.hero .wrap{padding-block:clamp(28px,4vw,56px) clamp(40px,6vw,80px)}
+.hero h1{font:800 clamp(36px,5.2vw,80px)/.98 'Inter Tight',sans-serif;letter-spacing:-.04em;margin:10px 0 10px}
+.hero h1 span{color:var(--accent)}
+.hero .sub{margin:0 0 26px;color:var(--muted);font-size:18px;max-width:60ch}
+.pick{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:24px;align-items:start}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.tile{position:relative;aspect-ratio:1/1;border:0;padding:0;border-radius:18px;overflow:hidden;cursor:pointer;background:#222 center/cover no-repeat;color:#fff;text-align:left;font:inherit;outline-offset:3px;transition:transform .2s, box-shadow .2s}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.72))}
+.tile span{position:absolute;left:12px;right:12px;bottom:12px;z-index:1;font:700 clamp(14px,1.25vw,17px)/1.15 'Inter Tight',sans-serif}
+.tile small{display:block;font:500 12px/1.2 'Inter';opacity:.85;margin-top:3px}
+.tile:hover{transform:translateY(-3px)}
+.tile[aria-pressed="true"]{box-shadow:0 0 0 4px var(--accent)}
+.tile[aria-pressed="true"]::before{content:"✓";position:absolute;z-index:2;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font-weight:800}
+.tile--dis{background:linear-gradient(160deg,#2B5BE0,#0F2F8F)}
+.tile--dis img{position:absolute;height:78%;right:-6%;top:4%;filter:drop-shadow(0 10px 10px rgba(0,0,0,.35))}
+@media (max-width:1100px){.pick{grid-template-columns:1fr}}
+@media (max-width:640px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ans{scroll-margin-top:120px;background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden;position:sticky;top:120px}
+.ans-h{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted)}
+.ans-h b{color:var(--accent)}
+.ans-b{padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px}
+.ans-top{display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;align-items:center}
+.ans-top .ph{height:120px;border-radius:14px;background:var(--media);display:grid;place-items:center}
+.ans-top img{height:108px;width:auto;filter:drop-shadow(0 10px 10px rgba(17,24,39,.2))}
+.ans-top h3{margin:0 0 6px;font:800 22px/1.1 'Inter Tight',sans-serif;letter-spacing:-.02em}
+.ans-top p{margin:0;color:var(--muted);font-size:14px}
+.ans .kk-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ans .more{font-weight:600;color:var(--brand);text-decoration:none;font-size:14px}
+@media (max-width:1100px){.ans{position:static}}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:28px}
+.steps div{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:16px;background:var(--surface-2)}
+.steps b{flex:none;width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font:800 14px 'Inter Tight'}
+.steps span{font-size:14px;color:var(--muted)}
+.steps strong{display:block;color:var(--ink);font-size:15px}
+@media (max-width:760px){.steps{grid-template-columns:1fr}}
+section.blk{padding-block:clamp(56px,8vw,104px);border-top:1px solid var(--line)}
+.sec-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:14px;margin-bottom:26px}
+.sec-h h2{margin:0;font:800 clamp(30px,3.8vw,56px)/1 'Inter Tight',sans-serif;letter-spacing:-.035em}
+.sec-h p{margin:0;color:var(--muted);max-width:46ch}
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px;align-items:center;background:var(--ink);color:#fff;border-radius:28px;padding:clamp(22px,4vw,48px);overflow:hidden}
+.calc h2{margin:0 0 10px;font:800 clamp(28px,3.4vw,48px)/1.02 'Inter Tight';letter-spacing:-.03em}
+.calc p{margin:0;color:#B8C0CF}
+.calc .out{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}
+.calc .out div{background:rgba(255,255,255,.07);border-radius:14px;padding:14px}
+.calc .out small{display:block;color:#9AA3B5;font-size:12px}
+.calc .out b{font:800 clamp(20px,2.4vw,30px)/1.1 'Inter Tight'}
+.calc .out .hi b{color:#FF8A6B}
+.calc input[type=range]{width:100%;accent-color:#FF5A36;margin-top:18px}
+.calc label{display:flex;justify-content:space-between;font-weight:600;margin-top:14px}
+.calc .can{display:flex;justify-content:center}
+.calc .can img{height:clamp(220px,28vw,340px);width:auto;filter:drop-shadow(0 30px 30px rgba(0,0,0,.5))}
+@media (max-width:860px){.calc{grid-template-columns:1fr}.calc .can{order:-1}.calc .out{grid-template-columns:1fr 1fr}}
+.kk-chip--bulk{background:var(--accent);border-color:var(--accent);color:#fff}
+.kk-pill.is-on{background:var(--ink);border-color:var(--ink);color:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:26px;display:flex;flex-direction:column;gap:12px}
+.box h3{margin:0;font:800 26px/1.05 'Inter Tight';letter-spacing:-.02em}
+.box p{margin:0;color:var(--muted)}
+.chk{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.chk li{padding-left:28px;position:relative}
+.chk li::before{content:"✓";position:absolute;left:0;top:0;width:20px;height:20px;border-radius:50%;background:#E6F4EC;color:var(--success);display:grid;place-items:center;font-size:12px;font-weight:800}
+.cab{background:#111827;color:#fff;border-color:#111827}
+.cab .k{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cab .k div{background:rgba(255,255,255,.07);border-radius:12px;padding:12px}
+.cab .k small{display:block;color:#9AA3B5;font-size:12px}
+.cab .k b{font:800 20px 'Inter Tight'}
+.cab .row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,.12);font-size:14px}
+.geo{display:flex;flex-wrap:wrap;gap:8px}
+.geo a{padding:10px 16px;border-radius:999px;background:var(--surface-2);text-decoration:none;font-weight:600}
+.geo a:hover{background:#FFE3DA}
+.todo{padding:12px 14px;border-radius:12px;border:1.5px dashed #E0A48F;background:#FFF5F1;color:#8A3A22;font-size:14px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.lead{border-radius:28px;padding:clamp(22px,4vw,48px);background:linear-gradient(120deg,#FF5A36,#FF8A3D);color:#fff;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:24px;align-items:center}
+.lead h2{margin:0;font:800 clamp(28px,3.6vw,50px)/1 'Inter Tight';letter-spacing:-.03em}
+.lead .kk-lead label{color:#fff}
+.lead .kk-btn{background:#111827;border-color:#111827;color:#fff}
+@media (max-width:900px){.lead{grid-template-columns:1fr}}
+footer{padding-block:32px 60px;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px}
+</style>
+<nav class="kk-variants" aria-label="Варіанти дизайну"><span>Дизайн KK:</span><a href="../v1/">1 · Лабораторія</a><a href="../v2/">2 · Термінал опту</a><a href="../v3/">3 · Синьо-жовтий</a><a href="../v4/">4 · Преміум</a><a href="../v5/" aria-current="page">5 · Підбір за задачею</a></nav>
+<header class="hdr"><div class="wrap">
+  <a href="#" class="kk-logo" aria-label="KK — на головну" style="display:flex;align-items:center;gap:10px;text-decoration:none"><svg width="62" height="38" viewBox="0 0 64 40" aria-hidden="true"><ellipse cx="30" cy="21" rx="27" ry="14" fill="none" stroke="#2A6BE0" stroke-width="2.4" transform="rotate(-10 30 21)"></ellipse><text x="30" y="29" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="700" font-size="24" fill="#0B2A6F">KK</text><path d="M55 3 l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6z" fill="#2A6BE0"></path></svg><span style="display:flex;flex-direction:column;line-height:1.1"><b style="font-size:13px;letter-spacing:.08em;color:#0B2A6F">PROFESSIONAL</b><span style="font-size:11px;letter-spacing:.12em;color:#3A4866;opacity:.8">CLEANING CHEMISTRY</span></span></a>
+  <nav aria-label="Головне меню"><a href="#pick">Підбір</a><a href="#kk-catalog">Каталог</a><a href="#calc">Калькулятор</a><a href="#kk-price">Опт 5 л</a><a href="#dist">Дистриб'юторам</a></nav>
+  <button type="button" class="kk-btn" data-open-cart data-kk-cartbtn aria-label="Відкрити кошик">Кошик <span class="kk-badge" data-kk-count hidden>0</span></button>
+</div></header>
+
+<section class="hero" id="pick"><div class="wrap">
+  <p class="kk-eyebrow" style="color:var(--accent)">Професійна хімія від виробника · Україна</p>
+  <h1>Що треба <span>відмити?</span></h1>
+  <p class="sub">Оберіть проблему — покажемо засіб KK, результат до/після і ціну спрею та каністри 5 л.</p>
+  <div class="pick">
+    <div class="tiles" role="group" aria-label="Оберіть проблему">
+      <button type="button" class="tile" data-task="antigrease" data-tag="fat" aria-pressed="true" style="background-image:url(../img/ba-antigrease-1-before.webp)"><span>Жир і нагар<small>плити, духовки</small></span></button>
+      <button type="button" class="tile" data-task="antinalit" data-tag="scale" aria-pressed="false" style="background-image:url(../img/ba-antinalit-0-before.webp)"><span>Вапняний наліт<small>душові, крани</small></span></button>
+      <button type="button" class="tile" data-task="mold" data-tag="mold" aria-pressed="false" style="background-image:url(../img/ba-mold-1-before.webp)"><span>Пліснява<small>шви, стіни</small></span></button>
+      <button type="button" class="tile" data-task="black-sinks" data-tag="scale" aria-pressed="false" style="background-image:url(../img/ba-black-sinks-0-before.webp)"><span>Чорні мийки<small>граніт, змішувачі</small></span></button>
+      <button type="button" class="tile" data-task="floor" data-tag="floor" aria-pressed="false" style="background-image:url(../img/ba-floor-0-before.webp)"><span>Підлога<small>щоденне миття</small></span></button>
+      <button type="button" class="tile" data-task="glass" data-tag="glass" aria-pressed="false" style="background-image:url(../img/ba-glass-1-before.webp)"><span>Скло і дзеркала<small>без розводів</small></span></button>
+      <button type="button" class="tile" data-task="stains" data-tag="textile" aria-pressed="false" style="background-image:url(../img/ba-stains-0-before.webp)"><span>Плями на текстилі<small>меблі, килими</small></span></button>
+      <button type="button" class="tile tile--dis" data-task="disinfectant" data-tag="disinfect" aria-pressed="false"><img src="../img/disinfectant.webp" alt=""><span>Дезінфекція<small>ручки, поверхні</small></span></button>
+    </div>
+    <aside class="ans" aria-live="polite">
+      <div class="ans-h"><span>Рекомендація KK</span><b id="ans-tag">Жир і нагар</b></div>
+      <div class="ans-b" id="ans"></div>
+    </aside>
+  </div>
+  <div class="steps"><div><b>1</b><span><strong>Оберіть задачу</strong>або весь набір для об'єкта</span></div><div><b>2</b><span><strong>Додайте в кошик</strong>знижка за обсяг рахується одразу</span></div><div><b>3</b><span><strong>Менеджер підтвердить</strong>наявність, доставку й рахунок</span></div></div>
+</div></section>
+
+<section class="blk" id="calc"><div class="wrap"><div class="calc">
+  <div>
+    <p class="kk-eyebrow" style="color:#FF8A6B">Калькулятор розчину</p>
+    <h2>Скільки коштує 1 літр робочого розчину?</h2>
+    <p>Концентрат для підлоги KK, каністра 5 л — 1 270 ₴. Розведення 10–50 мл на 1 л води.</p>
+    <label for="dose"><span>Дозування</span><span><b id="dose-v">25</b> мл / л</span></label>
+    <input id="dose" type="range" min="10" max="50" step="5" value="25">
+    <div class="out"><div><small>Розчину з каністри</small><b id="c-l">200 л</b></div><div class="hi"><small>Ціна 1 л розчину</small><b id="c-p">6,35 ₴</b></div><div><small>Відер по 10 л</small><b id="c-b">20</b></div></div>
+    <button type="button" class="kk-btn" data-add="floor:5" style="margin-top:18px;background:#FF5A36;border-color:#FF5A36">Додати каністру · 1 270 ₴</button>
+  </div>
+  <div class="can"><img src="../img/floor.webp" alt="Засіб для миття підлоги KK"></div>
+</div></div></section>
+
+<section class="blk" id="kk-catalog"><div class="wrap">
+  <div class="sec-h"><h2>Усі засоби KK</h2><p>Фільтр за задачею. Натисніть на фото — до/після і ціна за літр.</p></div>
+  <div data-kk="catalog"></div>
+</div></section>
+
+<section class="blk" id="kk-price"><div class="wrap">
+  <div class="sec-h"><h2>Опт: каністри 5 л</h2><p>Ціни з прайсу KK. Сходинки знижок нижче — приклад.</p></div>
+  <div data-kk="table"></div>
+</div></section>
+
+<section class="blk" id="dist"><div class="wrap grid2">
+  <div class="box"><p class="kk-eyebrow" style="color:var(--accent)">Дистриб'юторам</p><h3>Продавайте KK у своєму регіоні</h3>
+    <ul class="chk"><li>Персональний прайс до −20%</li><li>Ексклюзив на область</li><li>Кабінет: історія, документи, повтор замовлення</li><li>Прайс у XLSX і фід для сайту чи Prom</li></ul>
+    <a class="kk-btn" href="#kk-lead" style="align-self:flex-start">Подати заявку</a></div>
+  <div class="box cab" aria-label="Приклад кабінету дистриб'ютора"><div style="display:flex;justify-content:space-between"><b>Кабінет · ТОВ «Приклад»</b><span style="color:#9AA3B5;font-size:12px">демо</span></div>
+    <div class="k"><div><small>Знижка</small><b>−20%</b></div><div><small>План</small><b>68%</b></div><div><small>До сплати</small><b>18 400 ₴</b></div></div>
+    <div class="row"><span>№1048 · 74 каністри</span><span>55 984 ₴</span><span style="color:#6EE7A8">Відвантажено</span></div>
+    <div class="row"><span>№1031 · 92 каністри</span><span>34 120 ₴</span><span style="color:#9AA3B5">Закрито</span></div>
+    <button type="button" class="kk-btn" style="background:#FF5A36;border-color:#FF5A36">Повторити №1048</button></div>
+</div></section>
+
+<section class="blk" id="tender"><div class="wrap grid2">
+  <div class="box"><h3>Опт по містах</h3><p>Склад, строки й доставка для кожного міста.</p><div class="geo"><a href="#kk-price">Київ</a><a href="#kk-price">Львів</a><a href="#kk-price">Вінниця</a><a href="#kk-price">Хмельницький</a><a href="#kk-price">Чернівці</a></div></div>
+  <div class="box"><h3>Prozorro</h3><p>ДК 021:2015 · 39830000-9 · 33760000-5. Пакет документів для тендерної пропозиції одним архівом.</p><div class="todo">Сюди додамо ваші сертифікати, SDS і цифри виробництва</div></div>
+</div></section>
+
+<section class="blk" id="kk-lead" style="border-top:0;padding-top:0"><div class="wrap"><div class="lead">
+  <h2>Не знайшли свою задачу? Підберемо засоби під ваш об'єкт</h2>
+  <form class="kk-lead" data-lead><label for="l5n">Ім'я / компанія<input id="l5n" required></label><label for="l5p">Телефон<input id="l5p" type="tel" required placeholder="+380"></label><label for="l5t">Що прибираєте?<input id="l5t" placeholder="Офіс, ресторан, готель…"></label><button type="submit" class="kk-btn">Отримати підбір</button></form>
+</div></div></section>
+<footer><div class="wrap"><span>© KK — Professional cleaning chemistry</span><span>UA · EN</span></div></footer>
+<script>
+(function(){
+  function fmt(n){return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' ₴'}
+  function run(){
+    var K=window.KK; if(!K) return setTimeout(run,30);
+    var by={}; K.products.forEach(function(p){by[p.id]=p});
+    var ans=document.getElementById('ans'), tagEl=document.getElementById('ans-tag');
+    function chip(id,v,label,price){return '<button type="button" class="kk-chip'+(v==='5'?' kk-chip--bulk':'')+'" data-add="'+id+':'+v+'"><span>'+label+'</span><b>'+fmt(price)+'</b></button>'}
+    function show(btn){
+      document.querySelectorAll('.tile').forEach(function(t){t.setAttribute('aria-pressed',t===btn?'true':'false')});
+      var p=by[btn.getAttribute('data-task')]; tagEl.textContent=btn.querySelector('span').firstChild.textContent;
+      var chips=(p.p05?chip(p.id,'05','0,5 л',p.p05):'')+(p.p1?chip(p.id,'1','1 л',p.p1):'')+(p.p5?chip(p.id,'5','5 л',p.p5):'<span class="kk-muted" style="align-self:center;font-size:14px">5 л — ціна за запитом</span>');
+      var ba=p.ba?'<div class="kk-ba" style="--pos:50%"><img class="kk-ba__after" src="../img/ba-'+p.id+'-0-after.webp" alt="Після: '+p.name+'" width="476" height="214"><img class="kk-ba__before" src="../img/ba-'+p.id+'-0-before.webp" alt="До" width="476" height="214"><span class="kk-ba__line" aria-hidden="true"><span class="kk-ba__knob">‹ ›</span></span><span class="kk-ba__tag kk-ba__tag--b">До</span><span class="kk-ba__tag kk-ba__tag--a">Після</span><input class="kk-ba__range" type="range" min="0" max="100" value="50" aria-label="Порівняння до і після"></div>':'';
+      ans.innerHTML='<div class="ans-top"><div class="ph"><img src="../img/'+p.id+'.webp" alt="'+p.name+'"></div><div><h3>'+p.name+'</h3><p>'+p.claim+'. '+p.use+'.</p></div></div>'+ba+'<div class="kk-chips">'+chips+'</div><a class="more" href="#kk-catalog" data-more="'+btn.getAttribute('data-tag')+'">Усі засоби для цієї задачі ↓</a>';
+    }
+    document.addEventListener('click',function(e){
+      var t=e.target.closest('.tile'); if(t){show(t);if(window.innerWidth<1100){var a=document.querySelector('.ans');a.scrollIntoView({behavior:'smooth',block:'start'})}return}
+      var m=e.target.closest('[data-more]'); if(m){var pill=document.querySelector('#kk-catalog [data-filter-tag="'+m.getAttribute('data-more')+'"]'); if(pill) pill.click();}
+    });
+    show(document.querySelector('.tile'));
+    var d=document.getElementById('dose');
+    function calc(){var ml=+d.value, L=5000/ml; document.getElementById('dose-v').textContent=ml; document.getElementById('c-l').textContent=Math.round(L)+' л'; document.getElementById('c-p').textContent=(1270/L).toFixed(2).replace('.',',')+' ₴'; document.getElementById('c-b').textContent=Math.floor(L/10)}
+    d.addEventListener('input',calc); calc();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run); else run();
+})();
+</script>
+
+<script>/* KK storefront engine: data, catalog, quick view, before/after, cart drawer, checkout. Shared by all 5 design variants; each variant skins the .kk-* classes. */
+(function () {
+  'use strict';
+  var P = [
+    { id: 'antigrease', name: 'Антижир', claim: 'Проти жиру, нагару та стійких забруднень', p05: 245, p1: 430, p5: 670, p5name: 'Антижир гель 5 л', tags: ['fat', 'kitchen'], ba: 2, use: 'Плити, духовки, витяжки' },
+    { id: 'antinalit', name: 'Антиналіт', claim: 'Розчиняє вапняний наліт, іржу та сліди води', p05: 260, p1: 480, p5: 1360, tags: ['scale', 'bath'], ba: 2, use: 'Душові, раковини, плитка' },
+    { id: 'sanitary', name: 'Засіб для сантехніки', claim: 'Проти мильного нальоту, жовтизни та побутових забруднень', p05: 265, p1: 490, p5: 1320, p5name: 'Сантехніка, концентрат 5 л', tags: ['scale', 'bath'], ba: 2, use: 'Ванна, унітази, кераміка' },
+    { id: 'black-sinks', name: 'Для чорних мийок і змішувачів', claim: 'Очищає наліт і повертає глибину чорного кольору', p05: 270, p1: 520, p5: 1400, tags: ['scale', 'kitchen', 'bath'], ba: 2, use: 'Чорні мийки, змішувачі, нержавійка' },
+    { id: 'mold', name: 'Проти плісняви та грибка', claim: 'Глибоко очищає поверхні та запобігає повторному розвитку', p05: 220, p1: 400, p5: 1160, tags: ['mold', 'bath'], ba: 2, use: 'Ванна, кухня, вологі приміщення' },
+    { id: 'floor', name: 'Засіб для миття підлоги', claim: 'Концентрат для щоденного очищення різних типів підлоги', p1: 180, p5: 1270, p5name: 'Підлога, концентрат 5 л', tags: ['floor'], ba: 2, use: '10–50 мл на 1 л води', conc: [10, 50] },
+    { id: 'universal', name: 'Універсальний засіб', claim: 'Для щоденного прибирання різних поверхонь', p05: 210, p1: 400, p5: 1020, tags: ['floor', 'kitchen'], ba: 2, use: 'Усі типи поверхонь' },
+    { id: 'glass', name: 'Для скла та дзеркал', claim: 'Проти пилу, плям і відбитків на склі та дзеркалах', p05: 170, p1: 300, p5: 1090, p5name: 'Скло та дзеркала, концентрат 5 л', tags: ['glass'], ba: 2, use: 'Вікна, дзеркала, скляні поверхні' },
+    { id: 'disinfectant', name: 'Дезінфікуючий засіб', claim: 'Очищує поверхні від бактерій, вірусів і грибків', p05: 175, p1: 320, p5: 1380, p5name: 'Дезінфікуючий мийний засіб 5 л', tags: ['disinfect'], ba: 0, use: 'Ручки, вимикачі, поверхні' },
+    { id: 'dishes', name: 'Засіб для миття посуду', claim: 'Проти жиру, залишків їжі та слідів напоїв', p05: 120, p1: 200, p5: 960, p5name: 'Посуд, гіпоалергенний 5 л', tags: ['fat', 'kitchen'], ba: 2, use: 'Посуд, дитячий посуд' },
+    { id: 'fridge', name: 'Для холодильника', claim: 'Для очищення внутрішніх і зовнішніх поверхонь', p05: 180, p1: 340, p5: 380, tags: ['kitchen'], ba: 2, use: 'Полиці, ущільнювачі, фасади' },
+    { id: 'stains', name: 'Засіб для видалення плям', claim: 'Проти жирних, харчових та побутових плям на текстилі', p05: 210, p1: 380, p5: null, tags: ['textile'], ba: 2, use: 'Текстиль, меблі, килими' }
+  ];
+  var EXTRA5 = [
+    { id: 'grill', name: 'Антижир для гриля, концентрат', use: 'Грилі, барбекю, жирні забруднення', p5: 1520, tags: ['fat', 'kitchen'] },
+    { id: 'wc-gel', name: 'Сантехніка гель «Унітаз»', use: 'Вапняний наліт та іржа', p5: 640, tags: ['scale', 'bath'] },
+    { id: 'efflo', name: 'Засіб для видалення висолів', use: 'Камінь, цегла, тротуарна плитка', p5: 2300, tags: ['stone'] }
+  ];
+  var SET = { id: 'set7', name: 'Професійний набір для дому — 7 засобів', price: 1850, gift: 'рукавички + 5 мікрофібр' };
+  var PROBLEMS = [
+    ['all', 'Усе'], ['fat', 'Жир і нагар'], ['scale', 'Наліт і вапно'], ['mold', 'Пліснява'], ['floor', 'Підлога'],
+    ['glass', 'Скло і дзеркала'], ['disinfect', 'Дезінфекція'], ['textile', 'Плями на текстилі'], ['kitchen', 'Кухня'], ['bath', 'Санвузол'], ['stone', 'Камінь і плитка']
+  ];
+  var TIERS = [[5000, 5], [15000, 10], [30000, 15], [50000, 20]];
+  var byId = {}; P.forEach(function (p) { byId[p.id] = p; });
+
+  function fmt(n) { return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₴'; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function h(html) { var t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstChild; }
+  var CAN = function (label) {
+    return '<svg class="kk-can" viewBox="0 0 120 150" role="img" aria-label="Каністра KK 5 л"><defs><linearGradient id="kkg" x1="0" x2="1"><stop offset="0" stop-color="#ffffff"></stop><stop offset=".55" stop-color="#eef3fb"></stop><stop offset="1" stop-color="#d9e3f3"></stop></linearGradient></defs>' +
+      '<path d="M18 40 Q18 28 30 28 H74 V18 H98 V28 Q104 28 104 40 V136 Q104 146 94 146 H28 Q18 146 18 136 Z" fill="url(#kkg)" stroke="#c8d4ea" stroke-width="1.5"></path>' +
+      '<rect x="74" y="8" width="24" height="14" rx="3" fill="#1640C9"></rect><path d="M30 28 Q30 16 44 16 H60 Q66 16 66 24 V28" fill="none" stroke="#c8d4ea" stroke-width="6"></path>' +
+      '<rect x="28" y="62" width="66" height="56" rx="8" fill="#ffffff" stroke="#dbe4f4"></rect><ellipse cx="61" cy="80" rx="20" ry="10" fill="none" stroke="#2A6BE0" stroke-width="1.6" transform="rotate(-10 61 80)"></ellipse>' +
+      '<text x="61" y="85" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="700" font-size="15" fill="#0B2A6F">KK</text>' +
+      '<rect x="28" y="98" width="66" height="20" rx="0" fill="#1640C9"></rect><text x="40" y="112" font-family="system-ui,sans-serif" font-weight="700" font-size="11" fill="#fff">' + (label || '5 л') + '</text></svg>';
+  };
+
+  /* ---------- cart ---------- */
+  var cart = {};
+  try { cart = JSON.parse(localStorage.getItem('kk-cart') || '{}') || {}; } catch (e) { cart = {}; }
+  function save() { try { localStorage.setItem('kk-cart', JSON.stringify(cart)); } catch (e) {} }
+  function lineInfo(key) {
+    var parts = key.split(':'), id = parts[0], v = parts[1];
+    if (id === 'set7') return { name: SET.name, vol: 'набір', price: SET.price, img: '../img/home-set-7.webp' };
+    var p = byId[id] || EXTRA5.filter(function (x) { return x.id === id; })[0];
+    if (!p) return null;
+    var price = v === '05' ? p.p05 : v === '1' ? p.p1 : p.p5;
+    return { name: p.name, vol: v === '05' ? '0,5 л' : v === '1' ? '1 л' : '5 л', price: price, img: byId[id] ? '../img/' + id + '.webp' : null };
+  }
+  function totals() {
+    var s = 0, c = 0; Object.keys(cart).forEach(function (k) { var i = lineInfo(k); if (i && i.price) { s += i.price * cart[k]; c += cart[k]; } });
+    var pct = 0; TIERS.forEach(function (t) { if (s >= t[0]) pct = t[1]; });
+    var nx = TIERS.filter(function (t) { return s < t[0]; })[0];
+    return { s: s, c: c, pct: pct, nx: nx, sav: s * pct / 100, pay: s - s * pct / 100 };
+  }
+  function add(key, d) {
+    cart[key] = Math.max(0, (cart[key] || 0) + (d == null ? 1 : d));
+    if (!cart[key]) delete cart[key];
+    save(); renderCart(); bump();
+  }
+  function tierHTML(t) {
+    var pctBar = Math.min(100, t.s / 50000 * 100);
+    var msg = t.nx ? 'Додайте ще <b>' + fmt(t.nx[0] - t.s) + '</b> — і знижка <b>' + t.nx[1] + '%</b> на все' : '<b>Максимальна знижка 20%</b> вже ваша';
+    return '<div class="kk-tier"><p class="kk-tier__msg">' + msg + '</p><div class="kk-tier__bar" role="progressbar" aria-valuemin="0" aria-valuemax="50000" aria-valuenow="' + Math.round(t.s) + '" aria-label="Прогрес до знижки"><span style="width:' + pctBar + '%"></span>' +
+      TIERS.map(function (x) { return '<i style="left:' + (x[0] / 500) + '%" class="' + (t.s >= x[0] ? 'on' : '') + '"></i>'; }).join('') + '</div>' +
+      '<div class="kk-tier__steps">' + TIERS.map(function (x) { return '<span class="' + (t.s >= x[0] ? 'on' : '') + '">' + (x[0] / 1000) + ' тис <b>−' + x[1] + '%</b></span>'; }).join('') + '</div></div>';
+  }
+
+  /* ---------- drawer ---------- */
+  var drawer, scrim;
+  function buildDrawer() {
+    scrim = h('<div class="kk-scrim" hidden></div>');
+    drawer = h('<aside class="kk-drawer" aria-label="Кошик" aria-hidden="true" tabindex="-1"><header class="kk-drawer__head"><strong>Кошик</strong><button type="button" class="kk-x" data-close aria-label="Закрити кошик">×</button></header><div class="kk-drawer__body"></div></aside>');
+    document.body.appendChild(scrim); document.body.appendChild(drawer);
+    scrim.addEventListener('click', closeAll);
+  }
+  var step = 1;
+  function renderCart() {
+    document.querySelectorAll('[data-kk-count]').forEach(function (e) { var t = totals(); e.textContent = t.c; e.hidden = !t.c; });
+    document.querySelectorAll('[data-kk-sum]').forEach(function (e) { e.textContent = fmt(totals().pay); });
+    document.querySelectorAll('[data-kk="tierlive"]').forEach(function (e) { e.innerHTML = tierHTML(totals()); });
+    document.querySelectorAll('[data-qty-of]').forEach(function (e) { e.textContent = cart[e.getAttribute('data-qty-of')] || 0; });
+    if (!drawer) return;
+    var t = totals(), body = drawer.querySelector('.kk-drawer__body');
+    if (step === 3) { body.innerHTML = '<div class="kk-done"><div class="kk-done__mark" aria-hidden="true">✓</div><h3>Замовлення прийнято</h3><p>Менеджер зателефонує протягом 15 хвилин і підтвердить відправку Новою Поштою.</p><p class="kk-muted">Це демо: замовлення нікуди не надсилається.</p><button type="button" class="kk-btn" data-close>Продовжити покупки</button></div>'; return; }
+    if (!t.c) { body.innerHTML = '<div class="kk-empty"><p><b>Кошик порожній.</b></p><p class="kk-muted">Опт починається від 5 000 ₴ — знижка рахується автоматично.</p><button type="button" class="kk-btn" data-close>До каталогу</button></div>'; return; }
+    var lines = Object.keys(cart).map(function (k) {
+      var i = lineInfo(k); if (!i) return '';
+      return '<li class="kk-line"><span class="kk-line__img">' + (i.img ? '<img src="' + i.img + '" alt="">' : CAN()) + '</span><span class="kk-line__info"><b>' + esc(i.name) + '</b><span class="kk-muted">' + i.vol + ' · ' + fmt(i.price) + '</span></span>' +
+        '<span class="kk-qty"><button type="button" data-add="' + k + '" data-d="-1" aria-label="Менше">−</button><span>' + cart[k] + '</span><button type="button" data-add="' + k + '" data-d="1" aria-label="Більше">+</button></span><b class="kk-line__sum">' + fmt(i.price * cart[k]) + '</b></li>';
+    }).join('');
+    var sum = '<div class="kk-sum"><div><span>Сума за прайсом</span><span>' + fmt(t.s) + '</span></div>' + (t.pct ? '<div class="kk-sum__save"><span>Оптова знижка −' + t.pct + '%</span><span>−' + fmt(t.sav) + '</span></div>' : '') + '<div class="kk-sum__total"><span>До сплати</span><b>' + fmt(t.pay) + '</b></div></div>';
+    if (step === 1) {
+      body.innerHTML = tierHTML(t) + '<ul class="kk-lines">' + lines + '</ul>' + sum + '<button type="button" class="kk-btn kk-btn--wide" data-step="2">Оформити · крок 1 з 2</button>';
+    } else {
+      body.innerHTML = '<button type="button" class="kk-back" data-step="1">← Назад до кошика</button><form class="kk-form" data-checkout><h3>Доставка і оплата</h3>' +
+        '<label for="kk-c-name">Ім\'я та прізвище</label><input id="kk-c-name" required autocomplete="name">' +
+        '<label for="kk-c-tel">Телефон</label><input id="kk-c-tel" type="tel" required autocomplete="tel" placeholder="+380">' +
+        '<label for="kk-c-city">Місто і відділення Нової Пошти</label><input id="kk-c-city" required placeholder="Київ, відділення №…">' +
+        '<fieldset><legend>Оплата</legend><label class="kk-radio"><input type="radio" name="pay" checked> Карткою онлайн</label><label class="kk-radio"><input type="radio" name="pay"> Рахунок для ФОП / ТОВ</label><label class="kk-radio"><input type="radio" name="pay"> Накладений платіж</label></fieldset>' +
+        sum + '<button type="submit" class="kk-btn kk-btn--wide">Підтвердити замовлення · крок 2 з 2</button></form>';
+    }
+  }
+  var lastFocus;
+  function openCart() { if (toast) toast.classList.remove('is-on'); lastFocus = document.activeElement; if (step === 3) step = 1; renderCart(); scrim.hidden = false; drawer.classList.add('is-open'); drawer.setAttribute('aria-hidden', 'false'); document.documentElement.classList.add('kk-lock'); setTimeout(function () { drawer.focus(); }, 30); }
+  function closeAll() {
+    scrim.hidden = true; drawer.classList.remove('is-open'); drawer.setAttribute('aria-hidden', 'true');
+    if (modal) { modal.classList.remove('is-open'); modal.setAttribute('aria-hidden', 'true'); }
+    document.documentElement.classList.remove('kk-lock'); if (step === 3) { step = 1; } if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function bump() { document.querySelectorAll('[data-kk-cartbtn]').forEach(function (b) { b.classList.remove('kk-bump'); void b.offsetWidth; b.classList.add('kk-bump'); }); }
+
+  /* ---------- before/after ---------- */
+  function baHTML(id, row, labels) {
+    var r = row || 0;
+    return '<div class="kk-ba" style="--pos:50%"><img class="kk-ba__after" src="../img/ba-' + id + '-' + r + '-after.webp" alt="Після: ' + esc(byId[id].name) + '" loading="lazy" width="476" height="214">' +
+      '<img class="kk-ba__before" src="../img/ba-' + id + '-' + r + '-before.webp" alt="До" loading="lazy" width="476" height="214">' +
+      '<span class="kk-ba__line" aria-hidden="true"><span class="kk-ba__knob">‹ ›</span></span>' +
+      (labels === false ? '' : '<span class="kk-ba__tag kk-ba__tag--b">До</span><span class="kk-ba__tag kk-ba__tag--a">Після</span>') +
+      '<input class="kk-ba__range" type="range" min="0" max="100" value="50" aria-label="Порівняння до і після: ' + esc(byId[id].name) + '"></div>';
+  }
+  document.addEventListener('input', function (e) {
+    if (e.target.classList && e.target.classList.contains('kk-ba__range')) e.target.parentNode.style.setProperty('--pos', e.target.value + '%');
+  });
+
+  /* ---------- catalog ---------- */
+  function cardHTML(p) {
+    var chips = [];
+    if (p.p05) chips.push('<button type="button" class="kk-chip" data-add="' + p.id + ':05"><span>0,5 л</span><b>' + fmt(p.p05) + '</b></button>');
+    if (p.p1) chips.push('<button type="button" class="kk-chip" data-add="' + p.id + ':1"><span>1 л</span><b>' + fmt(p.p1) + '</b></button>');
+    if (p.p5) chips.push('<button type="button" class="kk-chip kk-chip--bulk" data-add="' + p.id + ':5"><span>5 л</span><b>' + fmt(p.p5) + '</b></button>');
+    return '<article class="kk-card" data-tags="' + p.tags.join(' ') + '"><button type="button" class="kk-card__media" data-quick="' + p.id + '" aria-label="Детальніше: ' + esc(p.name) + '"><img src="../img/' + p.id + '.webp" alt="' + esc(p.name) + ' KK" loading="lazy"><span class="kk-card__peek">Дивитися до / після</span></button>' +
+      '<div class="kk-card__body"><h3 class="kk-card__title">' + esc(p.name) + '</h3><p class="kk-card__claim">' + esc(p.claim) + '</p><div class="kk-card__chips">' + chips.join('') + '</div></div></article>';
+  }
+  function setCardHTML() {
+    return '<article class="kk-card kk-card--set" data-tags="kitchen bath floor glass"><div class="kk-card__media kk-card__media--set"><img src="../img/home-set-7.webp" alt="Набір із 7 засобів KK" loading="lazy"></div><div class="kk-card__body"><h3 class="kk-card__title">' + SET.name + '</h3><p class="kk-card__claim">Подарунок: ' + SET.gift + '</p><div class="kk-card__chips"><button type="button" class="kk-chip kk-chip--bulk" data-add="set7"><span>Набір</span><b>' + fmt(SET.price) + '</b></button></div></div></article>';
+  }
+  function renderCatalog(el) {
+    var withFilter = el.getAttribute('data-filter') !== '0';
+    var f = withFilter ? '<div class="kk-filter" role="group" aria-label="Що треба відмити?">' + PROBLEMS.map(function (x, i) { return '<button type="button" class="kk-pill' + (i ? '' : ' is-on') + '" data-filter-tag="' + x[0] + '" aria-pressed="' + (i ? 'false' : 'true') + '">' + x[1] + '</button>'; }).join('') + '</div>' : '';
+    el.innerHTML = f + '<div class="kk-grid">' + P.map(cardHTML).join('') + setCardHTML() + '</div><p class="kk-nores" hidden>Для цієї задачі дивіться оптовий прайс 5 л нижче.</p>';
+  }
+  function applyFilter(root, tag) {
+    root.querySelectorAll('.kk-pill').forEach(function (b) { var on = b.getAttribute('data-filter-tag') === tag; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
+    var n = 0; root.querySelectorAll('.kk-card').forEach(function (c) { var ok = tag === 'all' || (' ' + c.getAttribute('data-tags') + ' ').indexOf(' ' + tag + ' ') > -1; c.hidden = !ok; if (ok) n++; });
+    var nr = root.querySelector('.kk-nores'); if (nr) nr.hidden = n > 0;
+  }
+
+  /* ---------- 5 L wholesale table ---------- */
+  function renderTable(el) {
+    var rows = P.map(function (p) { return { id: p.id, name: p.p5name || (p.name + ' 5 л'), use: p.use, p5: p.p5, img: true }; }).concat(EXTRA5.map(function (x) { return { id: x.id, name: x.name, use: x.use, p5: x.p5 }; }));
+    el.innerHTML = '<div class="kk-table" role="table" aria-label="Оптовий прайс, каністри 5 л"><div class="kk-tr kk-tr--head" role="row"><span role="columnheader">Засіб, 5 л</span><span role="columnheader">Ціна</span><span role="columnheader">За 1 л</span><span role="columnheader">Кількість</span></div>' +
+      rows.map(function (r) {
+        var key = r.id + ':5';
+        return '<div class="kk-tr" role="row"><span role="cell" class="kk-td-name">' + CAN() + '<span><b>' + esc(r.name) + '</b><small>' + esc(r.use) + '</small></span></span>' +
+          '<span role="cell" class="kk-td-price">' + (r.p5 ? fmt(r.p5) : 'уточнюється') + '</span><span role="cell" class="kk-td-l">' + (r.p5 ? fmt(r.p5 / 5) : '—') + '</span>' +
+          '<span role="cell">' + (r.p5 ? '<span class="kk-qty"><button type="button" data-add="' + key + '" data-d="-1" aria-label="Менше: ' + esc(r.name) + '">−</button><span data-qty-of="' + key + '">0</span><button type="button" data-add="' + key + '" data-d="1" aria-label="Більше: ' + esc(r.name) + '">+</button></span>' : '<a class="kk-link" href="#kk-lead">Запитати ціну</a>') + '</span></div>';
+      }).join('') + '</div>';
+  }
+
+  /* ---------- quick view ---------- */
+  var modal;
+  function buildModal() {
+    modal = h('<div class="kk-modal" role="dialog" aria-modal="true" aria-label="Товар" aria-hidden="true" tabindex="-1"><div class="kk-modal__card"><button type="button" class="kk-x" data-close aria-label="Закрити">×</button><div class="kk-modal__inner"></div></div></div>');
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeAll(); });
+  }
+  function openQuick(id) {
+    var p = byId[id]; if (!p) return; lastFocus = document.activeElement;
+    var per = p.p5 ? fmt(p.p5 / 5) : null;
+    var econ = '';
+    if (p.conc) econ = '<div class="kk-econ"><span>Робочий розчин</span><b>від ' + fmt(p.p5 / 5000 * p.conc[0]).replace(' ₴', '') + ' ₴ за літр</b><small>' + p.conc[0] + '–' + p.conc[1] + ' мл концентрату на 1 л води · відро 10 л від ' + fmt(p.p5 / 5000 * p.conc[0] * 10) + '</small></div>';
+    else if (p.p5 && p.p1) econ = '<div class="kk-econ"><span>Каністра 5 л вигідніша</span><b>' + per + ' за літр</b><small>замість ' + fmt(p.p1) + ' за літр у спреї — економія ' + Math.round((1 - p.p5 / 5 / p.p1) * 100) + '%</small></div>';
+    var sliders = '';
+    for (var r = 0; r < (p.ba || 0); r++) sliders += baHTML(p.id, r);
+    modal.querySelector('.kk-modal__inner').innerHTML =
+      '<div class="kk-modal__media"><img src="../img/' + p.id + '.webp" alt="' + esc(p.name) + ' KK"></div>' +
+      '<div class="kk-modal__info"><p class="kk-eyebrow">' + esc(p.use) + '</p><h2>' + esc(p.name) + '</h2><p>' + esc(p.claim) + '</p>' +
+      (sliders ? '<div class="kk-modal__ba"><p class="kk-muted">Потягніть повзунок, щоб порівняти</p>' + sliders + '</div>' : '') + econ +
+      '<div class="kk-card__chips kk-card__chips--big">' + (p.p05 ? '<button type="button" class="kk-chip" data-add="' + p.id + ':05"><span>0,5 л</span><b>' + fmt(p.p05) + '</b></button>' : '') + (p.p1 ? '<button type="button" class="kk-chip" data-add="' + p.id + ':1"><span>1 л</span><b>' + fmt(p.p1) + '</b></button>' : '') + (p.p5 ? '<button type="button" class="kk-chip kk-chip--bulk" data-add="' + p.id + ':5"><span>5 л</span><b>' + fmt(p.p5) + '</b></button>' : '<a class="kk-chip" href="#kk-lead" data-close><span>5 л</span><b>запит</b></a>') + '</div>' +
+      '<ul class="kk-docs"><li>Паспорт безпеки (SDS) — PDF</li><li>Сертифікат / декларація — PDF</li></ul></div>';
+    modal.classList.add('is-open'); modal.setAttribute('aria-hidden', 'false'); scrim.hidden = false; document.documentElement.classList.add('kk-lock');
+    setTimeout(function () { modal.focus(); }, 30);
+  }
+
+  /* ---------- toast ---------- */
+  var toast;
+  function say(msg) {
+    if (!toast) { toast = h('<div class="kk-toast" role="status" aria-live="polite"></div>'); document.body.appendChild(toast); }
+    toast.innerHTML = msg; toast.classList.add('is-on'); clearTimeout(say.t); say.t = setTimeout(function () { toast.classList.remove('is-on'); }, 2600);
+  }
+
+  /* ---------- mobile bar ---------- */
+  function buildBar() {
+    var bar = h('<nav class="kk-mbar" aria-label="Швидкі дії"><a href="#kk-catalog">Каталог</a><a href="#kk-price">Прайс 5 л</a><button type="button" data-open-cart data-kk-cartbtn>Кошик <span class="kk-badge" data-kk-count hidden>0</span></button><a href="#kk-lead">Дзвінок</a></nav>');
+    document.body.appendChild(bar);
+  }
+
+  /* ---------- events ---------- */
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-add],[data-quick],[data-open-cart],[data-close],[data-step],[data-filter-tag]');
+    if (!t) return;
+    if (t.hasAttribute('data-add')) {
+      var key = t.getAttribute('data-add'), d = +(t.getAttribute('data-d') || 1);
+      add(key, d);
+      if (!t.closest('.kk-drawer') && !t.closest('.kk-qty')) {
+        var i = lineInfo(key), tt = totals();
+        say('<b>Додано:</b> ' + esc(i.name) + ', ' + i.vol + '<br>' + (tt.nx ? 'Ще ' + fmt(tt.nx[0] - tt.s) + ' до знижки ' + tt.nx[1] + '%' : 'Знижка 20% вже ваша') + ' · <button type="button" class="kk-linkbtn" data-open-cart>Кошик</button>');
+      }
+    } else if (t.hasAttribute('data-quick')) openQuick(t.getAttribute('data-quick'));
+    else if (t.hasAttribute('data-open-cart')) { if (modal) { modal.classList.remove('is-open'); } openCart(); }
+    else if (t.hasAttribute('data-step')) { step = +t.getAttribute('data-step'); renderCart(); }
+    else if (t.hasAttribute('data-filter-tag')) applyFilter(t.closest('[data-kk="catalog"]'), t.getAttribute('data-filter-tag'));
+    else if (t.hasAttribute('data-close')) closeAll();
+  });
+  document.addEventListener('submit', function (e) {
+    var f = e.target;
+    if (f.hasAttribute('data-checkout')) { e.preventDefault(); step = 3; cart = {}; save(); renderCart(); }
+    else if (f.hasAttribute('data-lead')) { e.preventDefault(); f.innerHTML = '<div class="kk-done"><div class="kk-done__mark" aria-hidden="true">✓</div><h3>Дякуємо! Заявку прийнято.</h3><p>Менеджер зв\'яжеться з вами протягом 15 хвилин у робочий час.</p><p class="kk-muted">Це демо: заявка нікуди не надсилається.</p></div>'; }
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
+
+  function boot() {
+    buildDrawer(); buildModal(); buildBar();
+    document.querySelectorAll('[data-kk="catalog"]').forEach(renderCatalog);
+    document.querySelectorAll('[data-kk="table"]').forEach(renderTable);
+    document.querySelectorAll('[data-kk="ba"]').forEach(function (el) { el.innerHTML = baHTML(el.getAttribute('data-id'), +(el.getAttribute('data-row') || 0)); });
+    document.querySelectorAll('[data-kk="can"]').forEach(function (el) { el.innerHTML = CAN(el.getAttribute('data-label')); });
+    renderCart();
+  }
+  window.KK = { products: P, fmt: fmt, openQuick: openQuick, openCart: openCart, add: add };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+<script>document.documentElement.lang="uk"</script>
+
+</html>
