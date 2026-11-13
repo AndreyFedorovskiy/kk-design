@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KK — передзамовлення</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;500;700&display=swap">
+<style>
+:root{
+  --bg:#1A1C1F;--surface:#24272C;--surface-2:#2C3036;--line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.2);
+  --ink:#ECEEF1;--muted:#8E949C;--sky:#BED2E6;
+  --btn:linear-gradient(180deg,#E3ECF5,#A9C0D6);--btn-ink:#16181B;
+  --ok:#BED2E6;--low:#E6CFA0;--out:#7B818A;--r:12px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:500 15px/1.4 'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px 120px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.top svg{flex:none}
+.top b{font-size:12px;letter-spacing:.1em}
+.top small{display:block;font-size:10px;letter-spacing:.12em;color:var(--muted)}
+.demo{margin-left:auto;font-size:11px;color:var(--low);border:1px solid rgba(230,207,160,.35);padding:3px 8px;border-radius:99px}
+h1{font-weight:300;font-size:26px;letter-spacing:-.02em;margin:6px 0 4px}
+.sub{color:var(--muted);margin:0 0 16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.store{display:block;width:100%;text-align:left;margin-bottom:10px;transition:border-color .15s}
+.store:hover,.store:focus-visible{border-color:var(--sky);outline:0}
+.store b{display:block;font-size:16px}
+.store span{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.store .cnt{color:var(--sky);margin-top:8px;font-size:12px}
+.bar{display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;margin-bottom:12px}
+.bar .pin{color:var(--sky)}
+.bar div{flex:1;min-width:0}
+.bar b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar small{color:var(--muted);font-size:12px}
+.link{background:none;border:0;color:var(--sky);padding:4px;font-size:13px}
+.search{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:var(--ink);padding:11px 12px;font:inherit;margin-bottom:10px}
+.search:focus{outline:0;border-color:var(--sky)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none}
+.chip{flex:none;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:7px 12px;font-size:13px;color:var(--muted)}
+.chip.on{background:var(--btn);color:var(--btn-ink);border-color:transparent}
+.tog{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;margin:2px 0 12px}
+.tog input{accent-color:#A9C0D6;width:18px;height:18px}
+.item{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;padding:10px;margin-bottom:8px}
+.ph{width:64px;height:64px;border-radius:10px;background:radial-gradient(90% 80% at 50% 10%,#3A3F46,#1E2125 75%);display:grid;place-items:center;overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:cover}
+.ph i{font-style:normal;font-size:11px;color:var(--muted);text-align:center;line-height:1.1}
+.nm{font-size:14px;line-height:1.25}
+.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:4px;font-size:12px}
+.price{font-weight:700}
+.st{padding:2px 7px;border-radius:99px;font-size:11px;border:1px solid}
+.st.ok{color:var(--ok);border-color:rgba(190,210,230,.35)}
+.st.low{color:var(--low);border-color:rgba(230,207,160,.35)}
+.st.out{color:var(--out);border-color:rgba(255,255,255,.12)}
+.note{color:var(--muted);font-size:11px;margin-top:3px}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:32px;height:32px;border-radius:9px;border:1px solid var(--line-2);background:var(--surface-2);font-size:18px;line-height:1}
+.qty button.add{background:var(--btn);color:var(--btn-ink);border:0}
+.qty button:disabled{opacity:.3;cursor:default}
+.qty span{min-width:18px;text-align:center;font-weight:700}
+.add-wide{border:0;background:var(--btn);color:var(--btn-ink);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:700}
+.add-wide.ghost{background:transparent;border:1px solid var(--line-2);color:var(--muted);font-weight:500}
+.foot{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(26,28,31,0),var(--bg) 35%)}
+.foot .in{max-width:560px;margin:0 auto}
+.cta{width:100%;border:0;border-radius:12px;padding:15px;background:var(--btn);color:var(--btn-ink);font-weight:700;font-size:16px;box-shadow:inset 0 1px 0 #fff,0 12px 28px -14px #000}
+.cta:disabled{opacity:.35}
+.row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.row:last-child{border:0}
+.row em{font-style:normal;color:var(--muted);font-size:12px;display:block}
+label.f{display:block;font-size:12px;color:var(--muted);margin:14px 0 6px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 0 auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font-size:13px}
+.seg button.on{background:var(--btn);color:var(--btn-ink);border-color:transparent;font-weight:700}
+input.t,textarea.t{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:var(--ink);padding:11px 12px;font:inherit}
+input.t:focus,textarea.t:focus{outline:0;border-color:var(--sky)}
+.done{text-align:center;padding:24px 0 8px}
+.done .ok{width:64px;height:64px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:var(--btn);color:var(--btn-ink);font-size:30px}
+.msg{white-space:pre-wrap;font:13px/1.45 ui-monospace,Menlo,monospace;background:#17191C;border:1px solid var(--line);border-radius:10px;padding:12px;color:#C9D1DC}
+.hint{color:var(--muted);font-size:12px;margin:8px 0 0}
+.empty{color:var(--muted);text-align:center;padding:30px 0}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <svg width="46" height="30" viewBox="0 0 64 40" aria-hidden="true"><ellipse cx="30" cy="21" rx="27" ry="14" fill="none" stroke="#BED2E6" stroke-width="2.4" transform="rotate(-10 30 21)"/><text x="30" y="29" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="700" font-size="24" fill="#fff">KK</text></svg>
+    <div><b>PROFESSIONAL</b><small>CLEANING CHEMISTRY</small></div>
+    <span class="demo" id="demoTag">демо-дані</span>
+  </div>
+
+  <!-- 1. Вибір магазину -->
+  <section id="vStores">
+    <h1>Оберіть магазин</h1>
+    <p class="sub">Покажемо, що є в наявності саме там, і відкладемо товар до вашого приходу.</p>
+    <div id="storeList"></div>
+  </section>
+
+  <!-- 2. Каталог з наявністю -->
+  <section id="vCatalog" hidden>
+    <div class="bar"><span class="pin">📍</span><div><b id="curStore"></b><small id="curUpd"></small></div><button class="link" id="chStore">Змінити</button></div>
+    <input class="search" id="q" type="search" placeholder="Пошук засобу…" autocomplete="off">
+    <div class="chips" id="cats"></div>
+    <label class="tog"><input type="checkbox" id="onlyIn"> Лише те, що є в наявності</label>
+    <div id="list"></div>
+  </section>
+
+  <!-- 3. Оформлення -->
+  <section id="vCheckout" hidden>
+    <button class="link" id="back">← До каталогу</button>
+    <h1>Передзамовлення</h1>
+    <p class="sub" id="coStore"></p>
+    <div class="card" id="coItems"></div>
+    <label class="f">Коли заберете</label>
+    <div class="seg" id="days"></div>
+    <label class="f">Орієнтовний час</label>
+    <div class="seg" id="slots"></div>
+    <label class="f" for="nm">Ім'я</label>
+    <input class="t" id="nm" autocomplete="name">
+    <label class="f" for="ph">Телефон</label>
+    <input class="t" id="ph" type="tel" inputmode="tel" placeholder="+380" autocomplete="tel">
+    <label class="f" for="cm">Коментар (необов'язково)</label>
+    <textarea class="t" id="cm" rows="2" placeholder="Наприклад: потрібен рахунок на ФОП"></textarea>
+    <p class="hint">Оплата при отриманні. Товар у наявності тримаємо 24 години, позиції «під замовлення» — повідомимо, коли надійдуть.</p>
+  </section>
+
+  <!-- 4. Готово -->
+  <section id="vDone" hidden>
+    <div class="done"><div class="ok">✓</div><h1 id="dnTitle"></h1><p class="sub" id="dnSub"></p></div>
+    <label class="f">Так це повідомлення побачить магазин у своєму Telegram-чаті:</label>
+    <div class="msg" id="dnMsg"></div>
+    <p class="hint" id="dnHint"></p>
+  </section>
+</div>
+
+<div class="foot" id="foot" hidden><div class="in"><button class="cta" id="cta"></button></div></div>
+
+<script>
+/* ===== Налаштування =====
+   DATA_URL  — звідки брати магазини, товари й залишки. Зараз демо-файл.
+               У робочій версії: адреса Google Apps Script (doGet), який читає Google-таблицю.
+   ORDER_URL — куди відправляти передзамовлення (doPost того ж скрипта). Порожньо = демо-режим. */
+const CONFIG = {
+  DATA_URL: 'demo-data.json',
+  ORDER_URL: '',
+  HOLD_HOURS: 24,
+  LOW_STOCK: 3
+};
+
+const tg = window.Telegram && Telegram.WebApp;
+const inTg = !!(tg && tg.initData);
+if (tg) { try { tg.ready(); tg.expand(); tg.setHeaderColor('#1A1C1F'); tg.setBackgroundColor('#1A1C1F'); } catch(e){} }
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uah = n => n.toLocaleString('uk-UA') + ' грн';
+const store = { get(k){ try{return localStorage.getItem(k)}catch(e){return null} }, set(k,v){ try{localStorage.setItem(k,v)}catch(e){} } };
+
+let DATA, STORE = null, CAT = 'Усі', cart = {}, day = 0, slot = null;
+
+function haptic(t){ try{ tg && tg.HapticFeedback.impactOccurred(t||'light'); }catch(e){} }
+function show(id){ ['vStores','vCatalog','vCheckout','vDone'].forEach(v => $('#'+v).hidden = v !== id); window.scrollTo(0,0); updateFoot(id); }
+
+function stockOf(id){ return (DATA.stock[STORE.id] || {})[id] || 0; }
+function badge(n){
+  if (n <= 0) return '<span class="st out">Немає · під замовлення 2–3 дні</span>';
+  if (n <= CONFIG.LOW_STOCK) return `<span class="st low">Залишилось ${n} шт</span>`;
+  return `<span class="st ok">В наявності ${n} шт</span>`;
+}
+
+/* --- магазини --- */
+function renderStores(){
+  $('#storeList').innerHTML = DATA.stores.map(s => {
+    const inStock = DATA.items.filter(i => (DATA.stock[s.id]||{})[i.id] > 0).length;
+    return `<button class="card store" data-id="${esc(s.id)}"><b>${esc(s.name)}</b><span>${esc(s.addr)}</span><span>${esc(s.hours)}</span><div class="cnt">${inStock} з ${DATA.items.length} позицій в наявності</div></button>`;
+  }).join('');
+}
+function pickStore(id){
+  STORE = DATA.stores.find(s => s.id === id); if (!STORE) return;
+  store.set('kk_store', id); cart = {}; haptic();
+  $('#curStore').textContent = STORE.name;
+  $('#curUpd').textContent = 'Залишки оновлено: ' + DATA.updated;
+  renderCats(); renderList(); show('vCatalog');
+}
+
+/* --- каталог --- */
+function renderCats(){
+  const cats = ['Усі', ...new Set(DATA.items.map(i => i.cat))];
+  $('#cats').innerHTML = cats.map(c => `<button class="chip ${c===CAT?'on':''}" data-c="${esc(c)}">${esc(c)}</button>`).join('');
+}
+function renderList(){
+  const q = $('#q').value.trim().toLowerCase(), only = $('#onlyIn').checked;
+  const rows = DATA.items.filter(i => (CAT==='Усі'||i.cat===CAT) && (!q || i.name.toLowerCase().includes(q)) && (!only || stockOf(i.id)>0))
+    .sort((a,b) => (stockOf(b.id)>0) - (stockOf(a.id)>0));
+  $('#list').innerHTML = rows.length ? rows.map(i => {
+    const n = stockOf(i.id), q = cart[i.id] || 0;
+    const ph = i.img ? `<img src="../img/${esc(i.img)}" alt="" loading="lazy">` : `<i>KK<br>5 л</i>`;
+    let ctl;
+    if (!q) ctl = `<button class="add-wide ${n<=0?'ghost':''}" data-add="${esc(i.id)}">${n>0?'Відкласти':'Замовити'}</button>`;
+    else ctl = `<div class="qty"><button data-dec="${esc(i.id)}" aria-label="Менше">−</button><span>${q}</span><button class="add" data-add="${esc(i.id)}" aria-label="Більше" ${n>0&&q>=n?'disabled':''}>+</button></div>`;
+    return `<div class="card item"><div class="ph">${ph}</div><div><div class="nm">${esc(i.name)} · ${esc(i.vol)}</div><div class="meta"><span class="price">${uah(i.price)}</span>${badge(n)}</div>${i.note?`<div class="note">${esc(i.note)}</div>`:''}</div>${ctl}</div>`;
+  }).join('') : '<div class="empty">Нічого не знайдено</div>';
+}
+function cartLines(){ return Object.entries(cart).filter(([,q])=>q>0).map(([id,q]) => { const i = DATA.items.find(x=>x.id===id); const n = stockOf(id); return { i, q, reserved: Math.min(q, Math.max(n,0)), toOrder: Math.max(q - Math.max(n,0), 0) }; }); }
+function total(){ return cartLines().reduce((s,l)=>s+l.i.price*l.q,0); }
+function count(){ return cartLines().reduce((s,l)=>s+l.q,0); }
+
+/* --- нижня кнопка (і в Telegram, і в браузері) --- */
+let mainHandler = null;
+function setCta(text, enabled, fn){
+  mainHandler = fn;
+  if (inTg){
+    $('#foot').hidden = true;
+    tg.MainButton.setParams({ text, is_visible: !!text, is_active: enabled, color:'#BED2E6', text_color:'#16181B' });
+  } else {
+    $('#foot').hidden = !text; $('#cta').textContent = text; $('#cta').disabled = !enabled;
+  }
+}
+if (inTg) tg.MainButton.onClick(() => mainHandler && mainHandler());
+$('#cta').onclick = () => mainHandler && mainHandler();
+
+function updateFoot(view){
+  if (inTg){ try{ view==='vCatalog'||view==='vCheckout' ? tg.BackButton.show() : tg.BackButton.hide(); }catch(e){} }
+  if (view === 'vCatalog'){ const c = count(); setCta(c ? `Оформити · ${c} шт · ${uah(total())}` : '', c>0, openCheckout); }
+  else if (view === 'vCheckout'){ setCta(`Підтвердити передзамовлення · ${uah(total())}`, true, submit); }
+  else setCta('', false, null);
+}
+if (inTg) tg.BackButton.onClick(() => { if (!$('#vCheckout').hidden) show('vCatalog'); else if (!$('#vCatalog').hidden) show('vStores'); });
+
+/* --- оформлення --- */
+const DAYS = ['Сьогодні','Завтра','Післязавтра'];
+const SLOTS = ['9–12','12–15','15–18','18–20'];
+function openCheckout(){
+  $('#coStore').textContent = `${STORE.name} · ${STORE.addr}`;
+  $('#coItems').innerHTML = cartLines().map(l => `<div class="row"><div>${esc(l.i.name)} · ${esc(l.i.vol)} × ${l.q}${l.toOrder?`<em>${l.reserved?`${l.reserved} шт з полиці, `:''}${l.toOrder} шт під замовлення (2–3 дні)</em>`:'<em>Відкладемо з полиці</em>'}</div><b>${uah(l.i.price*l.q)}</b></div>`).join('') + `<div class="row"><b>Разом</b><b>${uah(total())}</b></div>`;
+  $('#days').innerHTML = DAYS.map((d,k)=>`<button class="${k===day?'on':''}" data-day="${k}">${d}</button>`).join('');
+  $('#slots').innerHTML = SLOTS.map(s=>`<button class="${s===slot?'on':''}" data-slot="${s}">${s}</button>`).join('');
+  const u = inTg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+  if (u && !$('#nm').value) $('#nm').value = [u.first_name,u.last_name].filter(Boolean).join(' ');
+  show('vCheckout');
+}
+
+function orderText(o){
+  return `🧾 Передзамовлення ${o.no}\n📍 ${o.store}\n🕒 ${o.when}\n👤 ${o.name} · ${o.phone}${o.tgUser?` · @${o.tgUser}`:''}\n\n` +
+    o.lines.map(l=>`• ${l.name} · ${l.vol} × ${l.q} = ${uah(l.sum)}${l.toOrder?`  (під замовлення: ${l.toOrder})`:''}`).join('\n') +
+    `\n\nРазом: ${uah(o.total)}${o.comment?`\n💬 ${o.comment}`:''}\n\n[✅ Підтвердити]  [📦 Зібрано]  [✖ Скасувати]`;
+}
+
+async function submit(){
+  const name = $('#nm').value.trim(), phone = $('#ph').value.trim();
+  if (!name || phone.replace(/\D/g,'').length < 9){ haptic('heavy'); (name?$('#ph'):$('#nm')).focus(); return; }
+  const u = inTg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+  const o = {
+    no: 'KK-' + Date.now().toString().slice(-6), storeId: STORE.id, store: `${STORE.name}, ${STORE.addr}`,
+    when: `${DAYS[day]}${slot?`, ${slot}`:''}`, name, phone, comment: $('#cm').value.trim(), tgUser: u && u.username,
+    lines: cartLines().map(l=>({ id:l.i.id, name:l.i.name, vol:l.i.vol, q:l.q, sum:l.i.price*l.q, toOrder:l.toOrder })), total: total(),
+    initData: inTg ? tg.initData : ''
+  };
+  setCta('Надсилаємо…', false, null);
+  let sent = false;
+  if (CONFIG.ORDER_URL){
+    try { await fetch(CONFIG.ORDER_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(o) }); sent = true; } catch(e){}
+  }
+  // локально зменшуємо залишок, щоб було видно резерв
+  o.lines.forEach(l => { const s = DATA.stock[STORE.id]; s[l.id] = Math.max((s[l.id]||0) - l.q, 0); });
+  try{ tg && tg.HapticFeedback.notificationOccurred('success'); }catch(e){}
+  $('#dnTitle').textContent = `Замовлення ${o.no} прийнято`;
+  $('#dnSub').textContent = `${o.when} · ${STORE.name}. Товар з полиці відкладено на ${CONFIG.HOLD_HOURS} год. Нагадаємо в Telegram, коли все буде готово.`;
+  $('#dnMsg').textContent = orderText(o);
+  $('#dnHint').textContent = sent ? '' : 'Демо-режим: замовлення нікуди не відправлено. У робочій версії воно потрапить у чат магазину й у Google-таблицю, а залишок зменшиться автоматично.';
+  cart = {}; show('vDone');
+  setCta('Повернутись до каталогу', true, () => { renderList(); show('vCatalog'); });
+}
+
+/* --- події --- */
+document.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.matches('.store')) return pickStore(t.dataset.id);
+  if (t.dataset.c){ CAT = t.dataset.c; renderCats(); renderList(); return; }
+  if (t.dataset.add){ const id = t.dataset.add, n = stockOf(id), q = cart[id]||0; if (n>0 && q>=n) return; cart[id] = q+1; haptic(); renderList(); updateFoot('vCatalog'); return; }
+  if (t.dataset.dec){ const id = t.dataset.dec; cart[id] = Math.max((cart[id]||0)-1,0); haptic(); renderList(); updateFoot('vCatalog'); return; }
+  if (t.dataset.day){ day = +t.dataset.day; openCheckout(); return; }
+  if (t.dataset.slot){ slot = t.dataset.slot === slot ? null : t.dataset.slot; openCheckout(); return; }
+});
+$('#chStore').onclick = () => show('vStores');
+$('#back').onclick = () => show('vCatalog');
+$('#q').oninput = renderList;
+$('#onlyIn').onchange = renderList;
+
+/* --- старт --- */
+fetch(CONFIG.DATA_URL).then(r => r.json()).then(d => {
+  DATA = d; $('#demoTag').hidden = !/demo/.test(CONFIG.DATA_URL);
+  renderStores();
+  const p = new URLSearchParams(location.search).get('store') || (tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) || store.get('kk_store');
+  if (p && DATA.stores.some(s => s.id === p)) pickStore(p); else show('vStores');
+}).catch(() => { $('#storeList').innerHTML = '<div class="empty">Не вдалося завантажити залишки. Спробуйте пізніше.</div>'; show('vStores'); });
+</script>
+</body>
+</html>
