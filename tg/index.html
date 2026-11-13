@@ -81,6 +81,21 @@ input.t:focus,textarea.t:focus{outline:0;border-color:var(--sky)}
 .msg{white-space:pre-wrap;font:13px/1.45 ui-monospace,Menlo,monospace;background:#17191C;border:1px solid var(--line);border-radius:10px;padding:12px;color:#C9D1DC}
 .hint{color:var(--muted);font-size:12px;margin:8px 0 0}
 .empty{color:var(--muted);text-align:center;padding:30px 0}
+.pays{display:grid;gap:8px}
+.pay{display:block;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.pay b{display:block;font-size:15px}
+.pay span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.pay.on{border-color:var(--sky);box-shadow:0 0 0 1px var(--sky) inset}
+.paybox{padding:18px}
+.payhead{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+.payto{margin-top:14px;font-size:14px}
+.paysum{font-weight:300;font-size:38px;letter-spacing:-.02em;margin:4px 0}
+.payno{color:var(--muted);font-size:12px;margin-bottom:16px}
+.wallets{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wal{background:#fff;color:#111;border:0;border-radius:10px;padding:12px;font-weight:700;font-size:16px}
+.or{text-align:center;color:var(--muted);font-size:12px;margin:14px 0 8px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.paid{display:inline-block;margin-top:6px;padding:4px 10px;border-radius:99px;background:var(--btn);color:var(--btn-ink);font-size:12px;font-weight:700}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -124,7 +139,27 @@ input.t:focus,textarea.t:focus{outline:0;border-color:var(--sky)}
     <input class="t" id="ph" type="tel" inputmode="tel" placeholder="+380" autocomplete="tel">
     <label class="f" for="cm">Коментар (необов'язково)</label>
     <textarea class="t" id="cm" rows="2" placeholder="Наприклад: потрібен рахунок на ФОП"></textarea>
-    <p class="hint">Оплата при отриманні. Товар у наявності тримаємо 24 години, позиції «під замовлення» — повідомимо, коли надійдуть.</p>
+    <label class="f">Оплата</label>
+    <div class="pays" id="pays">
+      <button class="pay on" data-pay="online"><b>💳 Онлайн зараз</b><span>Картка, Apple Pay, Google Pay. Прийдете — просто заберете.</span></button>
+      <button class="pay" data-pay="cash"><b>💵 При отриманні</b><span>Готівкою або карткою в магазині.</span></button>
+    </div>
+    <p class="hint" id="payHint"></p>
+  </section>
+
+  <!-- 3b. Оплата (демо-екран платіжної сторінки) -->
+  <section id="vPay" hidden>
+    <div class="card paybox">
+      <div class="payhead"><span>Оплата замовлення</span><span class="lock">🔒 захищено банком</span></div>
+      <div class="payto">KK Professional Cleaning Chemistry</div>
+      <div class="paysum" id="paySum"></div>
+      <div class="payno" id="payNo"></div>
+      <div class="wallets"><button class="wal" data-paynow="1">Apple Pay</button><button class="wal" data-paynow="1">Google Pay</button></div>
+      <div class="or">або карткою</div>
+      <input class="t" value="4444 5555 6666 1111" readonly aria-label="Номер картки (демо)">
+      <div class="two"><input class="t" value="12/28" readonly aria-label="Термін (демо)"><input class="t" value="•••" readonly aria-label="CVV (демо)"></div>
+      <p class="hint">Демо: гроші не списуються. У робочій версії тут відкривається справжня сторінка оплати monobank або LiqPay.</p>
+    </div>
   </section>
 
   <!-- 4. Готово -->
@@ -159,10 +194,10 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const uah = n => n.toLocaleString('uk-UA') + ' грн';
 const store = { get(k){ try{return localStorage.getItem(k)}catch(e){return null} }, set(k,v){ try{localStorage.setItem(k,v)}catch(e){} } };
 
-let DATA, STORE = null, CAT = 'Усі', cart = {}, day = 0, slot = null;
+let DATA, STORE = null, CAT = 'Усі', cart = {}, day = 0, slot = null, pay = 'online', pending = null;
 
 function haptic(t){ try{ tg && tg.HapticFeedback.impactOccurred(t||'light'); }catch(e){} }
-function show(id){ ['vStores','vCatalog','vCheckout','vDone'].forEach(v => $('#'+v).hidden = v !== id); window.scrollTo(0,0); updateFoot(id); }
+function show(id){ ['vStores','vCatalog','vCheckout','vPay','vDone'].forEach(v => $('#'+v).hidden = v !== id); window.scrollTo(0,0); updateFoot(id); }
 
 function stockOf(id){ return (DATA.stock[STORE.id] || {})[id] || 0; }
 function badge(n){
@@ -225,10 +260,11 @@ $('#cta').onclick = () => mainHandler && mainHandler();
 function updateFoot(view){
   if (inTg){ try{ view==='vCatalog'||view==='vCheckout' ? tg.BackButton.show() : tg.BackButton.hide(); }catch(e){} }
   if (view === 'vCatalog'){ const c = count(); setCta(c ? `Оформити · ${c} шт · ${uah(total())}` : '', c>0, openCheckout); }
-  else if (view === 'vCheckout'){ setCta(`Підтвердити передзамовлення · ${uah(total())}`, true, submit); }
+  else if (view === 'vCheckout'){ setCta(pay==='online' ? `Перейти до оплати · ${uah(total())}` : `Підтвердити замовлення · ${uah(total())}`, true, submit); }
+  else if (view === 'vPay'){ setCta(`Оплатити ${uah(pending ? pending.total : 0)}`, true, () => finish(pending, true)); }
   else setCta('', false, null);
 }
-if (inTg) tg.BackButton.onClick(() => { if (!$('#vCheckout').hidden) show('vCatalog'); else if (!$('#vCatalog').hidden) show('vStores'); });
+if (inTg) tg.BackButton.onClick(() => { if (!$('#vPay').hidden) show('vCheckout'); else if (!$('#vCheckout').hidden) show('vCatalog'); else if (!$('#vCatalog').hidden) show('vStores'); });
 
 /* --- оформлення --- */
 const DAYS = ['Сьогодні','Завтра','Післязавтра'];
@@ -239,6 +275,8 @@ function openCheckout(){
   $('#days').innerHTML = DAYS.map((d,k)=>`<button class="${k===day?'on':''}" data-day="${k}">${d}</button>`).join('');
   $('#slots').innerHTML = SLOTS.map(s=>`<button class="${s===slot?'on':''}" data-slot="${s}">${s}</button>`).join('');
   const u = inTg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+  document.querySelectorAll('[data-pay]').forEach(b => b.classList.toggle('on', b.dataset.pay === pay));
+  $('#payHint').textContent = pay==='online' ? 'Після оплати товар з полиці тримаємо до 3 днів. Позиції «під замовлення» привеземо за 2–3 дні.' : `Товар у наявності тримаємо ${CONFIG.HOLD_HOURS} години, позиції «під замовлення» — повідомимо, коли надійдуть.`;
   if (u && !$('#nm').value) $('#nm').value = [u.first_name,u.last_name].filter(Boolean).join(' ');
   show('vCheckout');
 }
@@ -246,7 +284,7 @@ function openCheckout(){
 function orderText(o){
   return `🧾 Передзамовлення ${o.no}\n📍 ${o.store}\n🕒 ${o.when}\n👤 ${o.name} · ${o.phone}${o.tgUser?` · @${o.tgUser}`:''}\n\n` +
     o.lines.map(l=>`• ${l.name} · ${l.vol} × ${l.q} = ${uah(l.sum)}${l.toOrder?`  (під замовлення: ${l.toOrder})`:''}`).join('\n') +
-    `\n\nРазом: ${uah(o.total)}${o.comment?`\n💬 ${o.comment}`:''}\n\n[✅ Підтвердити]  [📦 Зібрано]  [✖ Скасувати]`;
+    `\n\nРазом: ${uah(o.total)}\n${o.paid ? '💳 ОПЛАЧЕНО онлайн' : '💵 Оплата при отриманні'}${o.comment?`\n💬 ${o.comment}`:''}\n\n[✅ Підтвердити]  [📦 Зібрано]  [✖ Скасувати]`;
 }
 
 async function submit(){
@@ -257,18 +295,30 @@ async function submit(){
     no: 'KK-' + Date.now().toString().slice(-6), storeId: STORE.id, store: `${STORE.name}, ${STORE.addr}`,
     when: `${DAYS[day]}${slot?`, ${slot}`:''}`, name, phone, comment: $('#cm').value.trim(), tgUser: u && u.username,
     lines: cartLines().map(l=>({ id:l.i.id, name:l.i.name, vol:l.i.vol, q:l.q, sum:l.i.price*l.q, toOrder:l.toOrder })), total: total(),
-    initData: inTg ? tg.initData : ''
+    pay, initData: inTg ? tg.initData : ''
   };
   setCta('Надсилаємо…', false, null);
-  let sent = false;
+  let res = null;
   if (CONFIG.ORDER_URL){
-    try { await fetch(CONFIG.ORDER_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(o) }); sent = true; } catch(e){}
+    try { res = await (await fetch(CONFIG.ORDER_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(o) })).json(); } catch(e){}
   }
+  if (pay === 'online'){
+    // Робоча версія: сервер створює рахунок у monobank/LiqPay і повертає посилання на оплату.
+    if (res && res.payUrl){ try { inTg ? tg.openLink(res.payUrl) : (location.href = res.payUrl); } catch(e){ location.href = res.payUrl; } return; }
+    pending = o; $('#paySum').textContent = uah(o.total); $('#payNo').textContent = `Замовлення ${o.no} · ${STORE.name}`;
+    show('vPay'); return;
+  }
+  finish(o, false, !!res);
+}
+
+function finish(o, paid, sent){
+  if (!o) return;
+  o.paid = paid; pending = null;
   // локально зменшуємо залишок, щоб було видно резерв
   o.lines.forEach(l => { const s = DATA.stock[STORE.id]; s[l.id] = Math.max((s[l.id]||0) - l.q, 0); });
   try{ tg && tg.HapticFeedback.notificationOccurred('success'); }catch(e){}
-  $('#dnTitle').textContent = `Замовлення ${o.no} прийнято`;
-  $('#dnSub').textContent = `${o.when} · ${STORE.name}. Товар з полиці відкладено на ${CONFIG.HOLD_HOURS} год. Нагадаємо в Telegram, коли все буде готово.`;
+  $('#dnTitle').textContent = paid ? `Оплачено! Замовлення ${o.no}` : `Замовлення ${o.no} прийнято`;
+  $('#dnSub').innerHTML = esc(`${o.when} · ${STORE.name}. ` + (paid ? 'Покажіть номер замовлення в магазині і заберіть покупку без черги.' : `Товар з полиці відкладено на ${CONFIG.HOLD_HOURS} год. Оплата в магазині.`) + ' Напишемо в Telegram, коли все буде зібрано.') + (paid ? `<br><span class="paid">✓ ${uah(o.total)} сплачено</span>` : '');
   $('#dnMsg').textContent = orderText(o);
   $('#dnHint').textContent = sent ? '' : 'Демо-режим: замовлення нікуди не відправлено. У робочій версії воно потрапить у чат магазину й у Google-таблицю, а залишок зменшиться автоматично.';
   cart = {}; show('vDone');
@@ -283,6 +333,8 @@ document.addEventListener('click', e => {
   if (t.dataset.add){ const id = t.dataset.add, n = stockOf(id), q = cart[id]||0; if (n>0 && q>=n) return; cart[id] = q+1; haptic(); renderList(); updateFoot('vCatalog'); return; }
   if (t.dataset.dec){ const id = t.dataset.dec; cart[id] = Math.max((cart[id]||0)-1,0); haptic(); renderList(); updateFoot('vCatalog'); return; }
   if (t.dataset.day){ day = +t.dataset.day; openCheckout(); return; }
+  if (t.dataset.pay){ pay = t.dataset.pay; haptic(); openCheckout(); return; }
+  if (t.dataset.paynow){ finish(pending, true); return; }
   if (t.dataset.slot){ slot = t.dataset.slot === slot ? null : t.dataset.slot; openCheckout(); return; }
 });
 $('#chStore').onclick = () => show('vStores');

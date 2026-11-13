@@ -10,6 +10,10 @@
  * Властивості скрипта (Project Settings → Script properties):
  *   BOT_TOKEN  — токен від @BotFather
  *   WEBAPP_URL — адреса міні-застосунку, напр. https://andreyfedorovskiy.github.io/kk-design/tg/
+ *   MONO_TOKEN — (для онлайн-оплати) токен інтернет-еквайрингу monobank: web.monobank.ua → Інтернет-еквайринг → API
+ *
+ * Онлайн-оплата: міні-застосунок → doPost створює рахунок у monobank → клієнт платить (картка / Apple Pay / Google Pay)
+ * → monobank шле вебхук на doPost → перевіряємо статус через API → замовлення йде в магазин з позначкою «ОПЛАЧЕНО».
  */
 
 const P = PropertiesService.getScriptProperties();
@@ -30,6 +34,7 @@ function doGet() {
 function doPost(e) {
   const body = JSON.parse(e.postData.contents || '{}');
   if (body.update_id) return handleUpdate_(body);
+  if (body.invoiceId) return handleMonoWebhook_(body);
   return handleOrder_(body);
 }
 
@@ -49,17 +54,58 @@ function handleOrder_(o) {
     const log = SS().getSheetByName('Замовлення') || SS().insertSheet('Замовлення');
     if (log.getLastRow() === 0) log.appendRow(['№', 'Створено', 'Магазин', 'Коли', 'Клієнт', 'Телефон', 'tg_id', 'Склад', 'Сума', 'Статус']);
     log.appendRow([o.no, new Date(), o.store, o.when, o.name, o.phone, user.id,
-      o.lines.map(l => `${l.name} ${l.vol} ×${l.q}`).join('; '), o.total, 'Нове']);
+      o.lines.map(l => `${l.name} ${l.vol} ×${l.q}`).join('; '), o.total, o.pay === 'online' ? 'Очікує оплату' : 'Нове']);
   } finally { lock.releaseLock(); }
+  o.user = user;
+  // Онлайн-оплата: створюємо рахунок, магазин дізнається про замовлення лише після оплати
+  if (o.pay === 'online' && P.getProperty('MONO_TOKEN')) {
+    const inv = JSON.parse(UrlFetchApp.fetch('https://api.monobank.ua/api/merchant/invoice/create', {
+      method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+      headers: { 'X-Token': P.getProperty('MONO_TOKEN') },
+      payload: JSON.stringify({
+        amount: Math.round(o.total * 100), ccy: 980,
+        merchantPaymInfo: { reference: o.no, destination: `Замовлення ${o.no}, KK`,
+          basketOrder: o.lines.map(l => ({ name: `${l.name} ${l.vol}`, qty: l.q, sum: Math.round(l.sum / l.q * 100), code: l.id })) },
+        redirectUrl: `https://t.me/${P.getProperty('BOT_USERNAME') || ''}`,
+        webHookUrl: ScriptApp.getService().getUrl(),
+        validity: 3600
+      })
+    }).getContentText());
+    P.setProperty('order_' + inv.invoiceId, JSON.stringify(o));
+    return json_({ ok: true, no: o.no, payUrl: inv.pageUrl });
+  }
+  notifyOrder_(o, false);
+  return json_({ ok: true, no: o.no });
+}
+
+function handleMonoWebhook_(b) {
+  const raw = P.getProperty('order_' + b.invoiceId); if (!raw) return json_({ ok: true });
+  // заголовки підпису Apps Script не бачить, тому перепитуємо статус у monobank напряму
+  const st = JSON.parse(UrlFetchApp.fetch('https://api.monobank.ua/api/merchant/invoice/status?invoiceId=' + b.invoiceId,
+    { headers: { 'X-Token': P.getProperty('MONO_TOKEN') }, muteHttpExceptions: true }).getContentText());
+  const o = JSON.parse(raw);
+  if (st.status === 'success') {
+    P.deleteProperty('order_' + b.invoiceId);
+    setStatus_(o.no, 'Оплачено');
+    notifyOrder_(o, true);
+  } else if (['failure', 'expired', 'reversed'].includes(st.status)) {
+    P.deleteProperty('order_' + b.invoiceId);
+    setStatus_(o.no, 'Оплата не пройшла');
+    tg_('sendMessage', { chat_id: o.user.id, text: `Оплата замовлення ${o.no} не пройшла. Спробуйте ще раз у боті або оберіть «Оплата при отриманні».` });
+  }
+  return json_({ ok: true });
+}
+
+function notifyOrder_(o, paid) {
+  const user = o.user;
   // 3) повідомлення в чат магазину з кнопками
   const st = rows_('Магазини').find(s => s.id === o.storeId);
-  if (st && st.chat_id) tg_('sendMessage', { chat_id: st.chat_id, text: orderText_(o, user), reply_markup: { inline_keyboard: [[
+  if (st && st.chat_id) tg_('sendMessage', { chat_id: st.chat_id, text: orderText_(o, user) + (paid ? '\n💳 ОПЛАЧЕНО онлайн' : '\n💵 Оплата при отриманні'), reply_markup: { inline_keyboard: [[
     { text: '✅ Підтвердити', callback_data: `ok|${o.no}|${user.id}` },
     { text: '📦 Зібрано', callback_data: `ready|${o.no}|${user.id}` },
     { text: '✖ Скасувати', callback_data: `cancel|${o.no}|${user.id}` }]] } });
   // 4) підтвердження клієнту
-  tg_('sendMessage', { chat_id: user.id, text: `Дякуємо! Передзамовлення ${o.no} прийнято.\n📍 ${o.store}\n🕒 ${o.when}\nНапишемо, коли все буде зібрано.` });
-  return json_({ ok: true, no: o.no });
+  tg_('sendMessage', { chat_id: user.id, text: `${paid ? '✅ Оплату отримано. ' : 'Дякуємо! '}Замовлення ${o.no} прийнято.\n📍 ${o.store}\n🕒 ${o.when}\nНапишемо, коли все буде зібрано.` });
 }
 
 function handleUpdate_(u) {
@@ -93,7 +139,7 @@ function expireReservations() {
   const log = SS().getSheetByName('Замовлення'); if (!log) return;
   const v = log.getDataRange().getValues(), now = Date.now();
   for (let r = 1; r < v.length; r++) {
-    if (['Нове', 'Підтверджено', 'Зібрано — чекаємо'].includes(v[r][9]) && now - new Date(v[r][1]).getTime() > 48 * 3600e3) {
+    if (['Нове', 'Очікує оплату', 'Підтверджено', 'Зібрано — чекаємо'].includes(v[r][9]) && now - new Date(v[r][1]).getTime() > 48 * 3600e3) {
       log.getRange(r + 1, 10).setValue('Прострочено');   // залишок магазин повертає вручну або доробимо автоповернення
     }
   }
